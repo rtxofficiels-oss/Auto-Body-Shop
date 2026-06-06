@@ -3,177 +3,521 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL - PROTOCOLE BREAKSTORMS</title>
+    <title>MDT - EMS Los Santos</title>
+    <!-- Google Fonts & FontAwesome pour le style et les icônes -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body {
-            background-color: #000;
-            color: #00FF41;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        :root {
+            --primary: #c0392b;
+            --primary-hover: #a93226;
+            --dark-bg: #121212;
+            --card-bg: #1c1c1c;
+            --text-color: #e0e0e0;
+            --text-muted: #888888;
+            --border-color: #2c2c2c;
+            --success: #27ae60;
+            --warning: #f39c12;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
             overflow: hidden;
-            -webkit-user-select: none; user-select: none;
-            position: relative;
         }
 
-        /* Scanlines style vieux moniteur */
-        .scanlines {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 50;
-        }
-
-        #container {
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 260px;
+            background-color: #0a0a0a;
+            border-right: 2px solid var(--primary);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            z-index: 20;
-            max-width: 800px;
+            justify-content: space-between;
+            padding: 20px;
         }
 
-        #terminal-output {
-            font-size: 1.8rem;
-            text-align: left;
-            line-height: 1.6;
-            text-shadow: 0 0 10px #00FF41;
-            display: none;
-            min-height: 380px;
-            margin-bottom: 20px;
+        .logo-area {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        /* RECTANGLE DE DÉCOMPTE FINAL */
-        #countdown-box {
-            display: none;
-            font-size: 5rem;
-            font-weight: bold;
-            color: #00FF41;
-            padding: 30px 60px;
-            border: 3px solid #00FF41;
-            background: rgba(0, 50, 0, 0.2);
-            box-shadow: 0 0 20px #00FF41, inset 0 0 15px #00FF41;
-            text-shadow: 0 0 15px #00FF41;
-            position: relative;
+        .logo-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
         }
 
-        #decrypt-btn {
-            background: transparent;
-            color: #00FF41;
-            border: 2px solid #00FF41;
-            padding: 20px 40px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 0 15px #00FF41;
+        .logo-area h1 {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        #decrypt-btn:hover { background: #00FF41; color: black; }
-
-        .cursor {
-            display: inline-block;
-            width: 12px; height: 1.8rem;
-            background-color: #00FF41;
-            margin-left: 5px;
-            animation: blink 0.8s infinite;
-            vertical-align: middle;
+        .nav-links {
+            list-style: none;
+            margin-top: 30px;
+            flex-grow: 1;
         }
-        @keyframes blink { 50% { opacity: 0; } }
 
-        /* Animation d'explosion de l'écran */
-        .destroy-anim { animation: boom 2s forwards; }
-        @keyframes boom {
-            0% { filter: saturate(1) brightness(1); }
-            50% { filter: saturate(20) brightness(5); background: white; }
-            100% { filter: brightness(0); opacity: 0; }
+        .nav-links li {
+            margin-bottom: 15px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .nav-links i {
+            margin-right: 15px;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-footer {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: white;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: #444; color: white; }
+        .btn-secondary:hover { background-color: #555; }
+        .btn-danger { background-color: #c0392b; color: white; }
+        .btn-small { padding: 5px 10px; font-size: 0.85rem; }
+
+        /* --- CARDS & GRID --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .citizen-card {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--primary);
+            border-radius: 5px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .citizen-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .citizen-id {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-label { color: var(--text-muted); }
+
+        .blood-type {
+            background-color: rgba(192, 57, 43, 0.2);
+            color: #ff6b6b;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .card-actions {
+            margin-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+        }
+
+        /* --- MODAL FORM --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            padding: 25px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            background-color: #121212;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            height: 80px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <div class="scanlines"></div>
-
-    <div id="container">
-        <button id="decrypt-btn" onclick="startDecryption()"> DÉCRYPTER LE MESSAGE </button>
-        
-        <div id="terminal-output">
-            <span id="text-target"></span><span class="cursor"></span>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-area">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <h1>EMS Los Santos</h1>
+            <p style="color: var(--text-muted); font-size: 0.8rem;">MDT Médical v2.1</p>
         </div>
-
-        <div id="countdown-box"><span id="timer">10:000</span></div>
+        <ul class="nav-links">
+            <li><a href="#" class="active"><i class="fa-solid fa-folder-open"></i> Base Citoyens</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            Base de données sécurisée
+        </div>
     </div>
 
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="header">
+            <h2>Gestion des Dossiers Médicaux</h2>
+            <div style="display: flex; gap: 15px;">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Rechercher un citoyen..." onkeyup="searchCitizen()">
+                </div>
+                <button class="btn btn-primary" onclick="openModal()"><i class="fa-solid fa-plus"></i> Nouveau Dossier</button>
+            </div>
+        </div>
+
+        <!-- GRID DES CITOYENS -->
+        <div class="grid" id="citizensGrid">
+            <!-- Les cartes de citoyens seront injectées ici par JavaScript -->
+        </div>
+    </div>
+
+    <!-- MODAL DOSSIER (AJOUT / MODIFICATION) -->
+    <div class="modal" id="citizenModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Créer un Dossier Médical</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="citizenForm" onsubmit="saveCitizen(event)">
+                <input type="hidden" id="citizenId">
+                
+                <div class="form-group">
+                    <label for="firstname">Prénom</label>
+                    <input type="text" id="firstname" class="form-control" required placeholder="John">
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Nom</label>
+                    <input type="text" id="lastname" class="form-control" required placeholder="Doe">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Numéro de Téléphone</label>
+                    <input type="text" id="phone" class="form-control" placeholder="555-XXXX">
+                </div>
+                <div class="form-group">
+                    <label for="bloodtype">Groupe Sanguin</label>
+                    <select id="bloodtype" class="form-control">
+                        <option value="Inconnu">Inconnu</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pathologies">Pathologies / Allergies</label>
+                    <textarea id="pathologies" class="form-control" placeholder="Ex: Diabète, Allergie à la Pénicilline..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notes d'interventions antérieures</label>
+                    <textarea id="notes" class="form-control" placeholder="Notes de l'EMS..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        const monMessageSecret = "CONNEXION ÉTABLIE...<br>IDENTITÉ : AGENT REAPER<br>PROTOCOLE : PROTOCOLE BREAKSTORMS ACTIVÉ.<br>--------------------------<br>MESSAGE : <br>RENDEZ-VOUS A CETTE POSITION X: 3240.227 | Y: 5171.646.<br>UNE FOIS LA BAS CONTACTER REAPER PAR INTRANET rtx_offi JE VOUS LAISSE COMMUNIQUER EN MORSE.<br>SINON, VOUS EN PAIEREZ LES CONSÉQUENCES<br>NE FAITES CONFIANCE À PERSONNE.<br><br>CELA FAIT UN BON MOMENT QUE VOUS PENSEZ QUE JE NE SUIS PLUS LA, MAIS CE N'EST QUE LE DÉBUT.<br>VOUS AVEZ DÉCIDÉ DE JOUER AVEC LES MAUVAISES PERSONNES.<br>VIPER VOUS AVAIT PRÉVENU VOUS N'AVEZ PAS ÉCOUTÉ NI PRIS EN COMPTE CES MENACES.<br>C'EST LA OÙ SE TROUVE VOTRE ERREUR, AGENT MATHEO VARGAS AGÉ DE 23 ANS MATRICULE 10, AINSI QUE BRYAN BONHOMME MATRICULE 93.<br>ON VOUS AVAIT PRÉVENU, MAINTENANT DURANT LES PROCHAINES SEMAINES VOUS ALLEZ CONNAITRE LA VENGEANCE DE VIPER.<br>VOUS ALLEZ PERDRE UNE PERSONNE A QUI VOUS TENEZ.<br> CE N'EST QUE LE DEBUT.";
+        // Banques de données de démo (si vide)
+        const defaultData = [
+            { id: "1", firstname: "Franklin", lastname: "Clinton", phone: "555-0100", bloodtype: "O+", pathologies: "Aucune", notes: "Blessure par balle légère à l'épaule (05/2026)." },
+            { id: "2", firstname: "Michael", lastname: "De Santa", phone: "555-0199", bloodtype: "A-", pathologies: "Anxiété, Problèmes cardiaques légers", notes: "Suivi psychologique recommandé." }
+        ];
 
-        let i = 0;
-        let lineCount = 0;
-
-        function startDecryption() {
-            document.getElementById('decrypt-btn').style.display = 'none';
-            document.getElementById('terminal-output').style.display = 'block';
-            typeWriter();
+        // Charger les données depuis le LocalStorage
+        let citizens = JSON.parse(localStorage.getItem('ems_citizens')) || defaultData;
+        if(!localStorage.getItem('ems_citizens')) {
+            localStorage.setItem('ems_citizens', JSON.stringify(citizens));
         }
 
-        function typeWriter() {
-            const textTarget = document.getElementById('text-target');
+        // Afficher les citoyens
+        function renderCitizens(dataToRender = citizens) {
+            const grid = document.getElementById('citizensGrid');
+            grid.innerHTML = '';
 
-            if (monMessageSecret.substring(i, i + 4) === "<br>") {
-                lineCount++;
-                i += 4;
+            if(dataToRender.length === 0) {
+                grid.innerHTML = `<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Aucun dossier trouvé.</p>`;
+                return;
+            }
 
-                if (lineCount >= 6) {
-                    setTimeout(() => {
-                        textTarget.innerHTML = ""; 
-                        lineCount = 0; 
-                        typeWriter(); 
-                    }, 4000); // 4 secondes pour lire avant d'effacer
-                } else {
-                    textTarget.innerHTML += "<br>";
-                    setTimeout(typeWriter, 150);
-                }
-            } 
-            else if (i < monMessageSecret.length) {
-                textTarget.innerHTML += monMessageSecret.charAt(i);
-                i++;
-                setTimeout(typeWriter, 80); 
-            } 
-            else {
-                // FIN DU TEXTE : On attend un peu et on lance le décompte
-                setTimeout(startFinalCountdown, 2000);
+            dataToRender.forEach(citizen => {
+                grid.innerHTML += `
+                    <div class="citizen-card">
+                        <h3>${citizen.firstname} ${citizen.lastname}</h3>
+                        <div class="citizen-id">ID DOSSIER: #LS-${citizen.id}</div>
+                        
+                        <div class="info-row">
+                            <span class="info-label"><i class="fa-solid fa-phone"></i> Tél:</span>
+                            <span>${citizen.phone || 'Non renseigné'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fa-solid fa-droplet"></i> Sang:</span>
+                            <span class="blood-type">${citizen.bloodtype}</span>
+                        </div>
+                        <div class="info-row" style="flex-direction: column; margin-top: 10px;">
+                            <span class="info-label">Pathologies/Allergies:</span>
+                            <span style="color: #f39c12; font-size: 0.85rem; margin-top: 2px;">${citizen.pathologies || 'Aucune'}</span>
+                        </div>
+                        <div class="info-row" style="flex-direction: column; margin-top: 10px;">
+                            <span class="info-label">Notes Médicales:</span>
+                            <p style="font-size: 0.85rem; background: #121212; padding: 8px; border-radius: 4px; margin-top: 4px; border: 1px solid #222;">
+                                ${citizen.notes || 'Aucune note.'}
+                            </p>
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="btn btn-secondary btn-small" onclick="editCitizen('${citizen.id}')"><i class="fa-solid fa-pen"></i> Modifier</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteCitizen('${citizen.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Ouvrir la Modal
+        function openModal(id = null) {
+            const modal = document.getElementById('citizenModal');
+            const form = document.getElementById('citizenForm');
+            modal.style.display = 'flex';
+
+            if(id) {
+                document.getElementById('modalTitle').innerText = "Modifier le Dossier";
+                const cit = citizens.find(c => c.id === id);
+                document.getElementById('citizenId').value = cit.id;
+                document.getElementById('firstname').value = cit.firstname;
+                document.getElementById('lastname').value = cit.lastname;
+                document.getElementById('phone').value = cit.phone;
+                document.getElementById('bloodtype').value = cit.bloodtype;
+                document.getElementById('pathologies').value = cit.pathologies;
+                document.getElementById('notes').value = cit.notes;
+            } else {
+                document.getElementById('modalTitle').innerText = "Créer un Dossier Médical";
+                form.reset();
+                document.getElementById('citizenId').value = '';
             }
         }
 
-        function startFinalCountdown() {
-            document.getElementById('terminal-output').style.display = 'none';
-            const box = document.getElementById('countdown-box');
-            const timerSpan = document.getElementById('timer');
-            box.style.display = 'block';
-
-            let timeLeft = 10000; // 10 secondes
-            const interval = setInterval(() => {
-                timeLeft -= 13;
-                if (timeLeft <= 0) {
-                    clearInterval(interval);
-                    timerSpan.innerHTML = "0:000";
-                    document.body.classList.add('destroy-anim');
-                    setTimeout(() => { document.body.innerHTML = ""; }, 2000);
-                } else {
-                    let s = Math.floor(timeLeft / 1000);
-                    let ms = timeLeft % 1000;
-                    timerSpan.innerHTML = s + ":" + ms.toString().padStart(3, '0');
-                }
-            }, 13);
+        // Fermer la Modal
+        function closeModal() {
+            document.getElementById('citizenModal').style.display = 'none';
         }
-        
-        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // Sauvegarder (Créer ou Modifier)
+        function saveCitizen(e) {
+            e.preventDefault();
+            const id = document.getElementById('citizenId').value;
+            const firstname = document.getElementById('firstname').value;
+            const lastname = document.getElementById('lastname').value;
+            const phone = document.getElementById('phone').value;
+            const bloodtype = document.getElementById('bloodtype').value;
+            const pathologies = document.getElementById('pathologies').value;
+            const notes = document.getElementById('notes').value;
+
+            if (id) {
+                // Modification
+                const index = citizens.findIndex(c => c.id === id);
+                citizens[index] = { id, firstname, lastname, phone, bloodtype, pathologies, notes };
+            } else {
+                // Création (génération d'un ID unique basé sur le timestamp)
+                const newId = Date.now().toString().slice(-5);
+                citizens.push({ id: newId, firstname, lastname, phone, bloodtype, pathologies, notes });
+            }
+
+            localStorage.setItem('ems_citizens', JSON.stringify(citizens));
+            renderCitizens();
+            closeModal();
+        }
+
+        // Pré-remplir pour modification
+        function editCitizen(id) {
+            openModal(id);
+        }
+
+        // Supprimer un dossier
+        function deleteCitizen(id) {
+            if(confirm("Êtes-vous sûr de vouloir supprimer définitivement ce dossier médical ?")) {
+                citizens = citizens.filter(c => c.id !== id);
+                localStorage.setItem('ems_citizens', JSON.stringify(citizens));
+                renderCitizens();
+            }
+        }
+
+        // Barre de recherche dynamique
+        function searchCitizen() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = citizens.filter(c => 
+                c.firstname.toLowerCase().includes(query) || 
+                c.lastname.toLowerCase().includes(query) ||
+                c.id.includes(query)
+            );
+            renderCitizens(filtered);
+        }
+
+        // Lancement au chargement du site
+        window.onload = () => renderCitizens();
     </script>
 </body>
 </html>
-
-
-
