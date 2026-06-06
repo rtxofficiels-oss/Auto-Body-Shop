@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MDT - EMS Los Santos</title>
-    <!-- Google Fonts & FontAwesome pour le style et les icônes -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -292,7 +291,6 @@
 </head>
 <body>
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="logo-area">
             <i class="fa-solid fa-heart-pulse"></i>
@@ -307,7 +305,6 @@
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="main-content">
         <div class="header">
             <h2>Gestion des Dossiers Médicaux</h2>
@@ -320,13 +317,10 @@
             </div>
         </div>
 
-        <!-- GRID DES CITOYENS -->
         <div class="grid" id="citizensGrid">
-            <!-- Les cartes de citoyens seront injectées ici par JavaScript -->
-        </div>
+            </div>
     </div>
 
-    <!-- MODAL DOSSIER (AJOUT / MODIFICATION) -->
     <div class="modal" id="citizenModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -379,22 +373,53 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        // Banques de données de démo (si vide)
-        const defaultData = [
-            { id: "1", firstname: "Franklin", lastname: "Clinton", phone: "555-0100", bloodtype: "O+", pathologies: "Aucune", notes: "Blessure par balle légère à l'épaule (05/2026)." },
-            { id: "2", firstname: "Michael", lastname: "De Santa", phone: "555-0199", bloodtype: "A-", pathologies: "Anxiété, Problèmes cardiaques légers", notes: "Suivi psychologique recommandé." }
-        ];
+    <script type="module">
+        // Importation des bibliothèques Firebase nécessaires via CDN officiel
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Charger les données depuis le LocalStorage
-        let citizens = JSON.parse(localStorage.getItem('ems_citizens')) || defaultData;
-        if(!localStorage.getItem('ems_citizens')) {
-            localStorage.setItem('ems_citizens', JSON.stringify(citizens));
+        // Vos paramètres de configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBFRmIFQMFhEcdNJZfWN4I5u31ierKlbs0",
+            authDomain: "emergency-service-suivis.firebaseapp.com",
+            projectId: "emergency-service-suivis",
+            storageBucket: "emergency-service-suivis.firebasestorage.app",
+            messagingSenderId: "725400084570",
+            appId: "1:725400084570:web:6692af8d0652926e1fb863",
+            measurementId: "G-S0BM5DCTLK",
+            databaseURL: "https://emergency-service-suivis-default-rtdb.firebaseio.com/"
+        };
+
+        // Initialisation de Firebase et Analytics
+        const app = initializeApp(firebaseConfig);
+        
+        // Sécurité Analytics pour éviter les crashs si le fichier est ouvert localement (file:///)
+        if (window.location.protocol !== "file:") {
+            getAnalytics(app);
         }
 
-        // Afficher les citoyens
-        function renderCitizens(dataToRender = citizens) {
+        const db = getDatabase(app);
+        const citizensRef = ref(db, 'citizens');
+
+        // Mémoire locale pour la barre de recherche
+        let citizens = [];
+
+        // ÉCOUTE ET SYNCHRONISATION EN TEMPS RÉEL (Firebase -> Interface)
+        onValue(citizensRef, (snapshot) => {
+            citizens = [];
+            const data = snapshot.val();
+            
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    citizens.push({ id: key, ...data[key] });
+                });
+            }
+            renderCitizens(citizens);
+        });
+
+        // Fonction d'affichage globale
+        window.renderCitizens = function(dataToRender = citizens) {
             const grid = document.getElementById('citizensGrid');
             grid.innerHTML = '';
 
@@ -407,7 +432,7 @@
                 grid.innerHTML += `
                     <div class="citizen-card">
                         <h3>${citizen.firstname} ${citizen.lastname}</h3>
-                        <div class="citizen-id">ID DOSSIER: #LS-${citizen.id}</div>
+                        <div class="citizen-id">ID DOSSIER: #LS-${citizen.id.slice(-5)}</div>
                         
                         <div class="info-row">
                             <span class="info-label"><i class="fa-solid fa-phone"></i> Tél:</span>
@@ -437,15 +462,41 @@
             });
         }
 
-        // Ouvrir la Modal
-        function openModal(id = null) {
-            const modal = document.getElementById('citizenModal');
-            const form = document.getElementById('citizenForm');
-            modal.style.display = 'flex';
+        // Sauvegarder (Créer sur Firebase ou Mettre à jour)
+        window.saveCitizen = function(e) {
+            e.preventDefault();
+            const id = document.getElementById('citizenId').value;
+            
+            const citizenData = {
+                firstname: document.getElementById('firstname').value,
+                lastname: document.getElementById('lastname').value,
+                phone: document.getElementById('phone').value,
+                bloodtype: document.getElementById('bloodtype').value,
+                pathologies: document.getElementById('pathologies').value,
+                notes: document.getElementById('notes').value
+            };
 
-            if(id) {
+            if (id) {
+                // Modification de l'entrée existante sur Firebase
+                update(ref(db, 'citizens/' + id), citizenData).then(() => closeModal());
+            } else {
+                // Création d'un nouvel identifiant unique sur Firebase
+                push(citizensRef, citizenData).then(() => closeModal());
+            }
+        }
+
+        // Supprimer un dossier de Firebase
+        window.deleteCitizen = function(id) {
+            if(confirm("Êtes-vous sûr de vouloir supprimer définitivement ce dossier médical ?")) {
+                remove(ref(db, 'citizens/' + id));
+            }
+        }
+
+        // Ouvrir et pré-remplir la Modal pour modification
+        window.editCitizen = function(id) {
+            const cit = citizens.find(c => c.id === id);
+            if(cit) {
                 document.getElementById('modalTitle').innerText = "Modifier le Dossier";
-                const cit = citizens.find(c => c.id === id);
                 document.getElementById('citizenId').value = cit.id;
                 document.getElementById('firstname').value = cit.firstname;
                 document.getElementById('lastname').value = cit.lastname;
@@ -453,71 +504,33 @@
                 document.getElementById('bloodtype').value = cit.bloodtype;
                 document.getElementById('pathologies').value = cit.pathologies;
                 document.getElementById('notes').value = cit.notes;
-            } else {
-                document.getElementById('modalTitle').innerText = "Créer un Dossier Médical";
-                form.reset();
-                document.getElementById('citizenId').value = '';
+                document.getElementById('citizenModal').style.display = 'flex';
             }
         }
 
-        // Fermer la Modal
-        function closeModal() {
-            document.getElementById('citizenModal').style.display = 'none';
-        }
-
-        // Sauvegarder (Créer ou Modifier)
-        function saveCitizen(e) {
-            e.preventDefault();
-            const id = document.getElementById('citizenId').value;
-            const firstname = document.getElementById('firstname').value;
-            const lastname = document.getElementById('lastname').value;
-            const phone = document.getElementById('phone').value;
-            const bloodtype = document.getElementById('bloodtype').value;
-            const pathologies = document.getElementById('pathologies').value;
-            const notes = document.getElementById('notes').value;
-
-            if (id) {
-                // Modification
-                const index = citizens.findIndex(c => c.id === id);
-                citizens[index] = { id, firstname, lastname, phone, bloodtype, pathologies, notes };
-            } else {
-                // Création (génération d'un ID unique basé sur le timestamp)
-                const newId = Date.now().toString().slice(-5);
-                citizens.push({ id: newId, firstname, lastname, phone, bloodtype, pathologies, notes });
-            }
-
-            localStorage.setItem('ems_citizens', JSON.stringify(citizens));
-            renderCitizens();
-            closeModal();
-        }
-
-        // Pré-remplir pour modification
-        function editCitizen(id) {
-            openModal(id);
-        }
-
-        // Supprimer un dossier
-        function deleteCitizen(id) {
-            if(confirm("Êtes-vous sûr de vouloir supprimer définitivement ce dossier médical ?")) {
-                citizens = citizens.filter(c => c.id !== id);
-                localStorage.setItem('ems_citizens', JSON.stringify(citizens));
-                renderCitizens();
-            }
-        }
-
-        // Barre de recherche dynamique
-        function searchCitizen() {
+        // Barre de recherche dynamique sur les données synchronisées
+        window.searchCitizen = function() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = citizens.filter(c => 
                 c.firstname.toLowerCase().includes(query) || 
                 c.lastname.toLowerCase().includes(query) ||
-                c.id.includes(query)
+                c.id.toLowerCase().includes(query)
             );
             renderCitizens(filtered);
         }
+    </script>
 
-        // Lancement au chargement du site
-        window.onload = () => renderCitizens();
+    <script>
+        function openModal() {
+            document.getElementById('modalTitle').innerText = "Créer un Dossier Médical";
+            document.getElementById('citizenForm').reset();
+            document.getElementById('citizenId').value = '';
+            document.getElementById('citizenModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('citizenModal').style.display = 'none';
+        }
     </script>
 </body>
 </html>
