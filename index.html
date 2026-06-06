@@ -318,7 +318,7 @@
         </div>
 
         <div class="grid" id="citizensGrid">
-            </div>
+        </div>
     </div>
 
     <div class="modal" id="citizenModal">
@@ -374,12 +374,10 @@
     </div>
 
     <script type="module">
-        // Importation des bibliothèques Firebase nécessaires via CDN officiel
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
         import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Vos paramètres de configuration Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBFRmIFQMFhEcdNJZfWN4I5u31ierKlbs0",
             authDomain: "emergency-service-suivis.firebaseapp.com",
@@ -391,10 +389,8 @@
             databaseURL: "https://emergency-service-suivis-default-rtdb.firebaseio.com/"
         };
 
-        // Initialisation de Firebase et Analytics
         const app = initializeApp(firebaseConfig);
         
-        // Sécurité Analytics pour éviter les crashs si le fichier est ouvert localement (file:///)
         if (window.location.protocol !== "file:") {
             getAnalytics(app);
         }
@@ -402,10 +398,9 @@
         const db = getDatabase(app);
         const citizensRef = ref(db, 'citizens');
 
-        // Mémoire locale pour la barre de recherche
         let citizens = [];
 
-        // ÉCOUTE ET SYNCHRONISATION EN TEMPS RÉEL (Firebase -> Interface)
+        // ÉCOUTE EN TEMPS RÉEL
         onValue(citizensRef, (snapshot) => {
             citizens = [];
             const data = snapshot.val();
@@ -418,7 +413,7 @@
             renderCitizens(citizens);
         });
 
-        // Fonction d'affichage globale
+        // Liaison des fonctions à l'objet GLOBAL Window (Pour régler le bug HTML/Module)
         window.renderCitizens = function(dataToRender = citizens) {
             const grid = document.getElementById('citizensGrid');
             grid.innerHTML = '';
@@ -462,7 +457,6 @@
             });
         }
 
-        // Sauvegarder (Créer sur Firebase ou Mettre à jour)
         window.saveCitizen = function(e) {
             e.preventDefault();
             const id = document.getElementById('citizenId').value;
@@ -477,22 +471,18 @@
             };
 
             if (id) {
-                // Modification de l'entrée existante sur Firebase
                 update(ref(db, 'citizens/' + id), citizenData).then(() => closeModal());
             } else {
-                // Création d'un nouvel identifiant unique sur Firebase
                 push(citizensRef, citizenData).then(() => closeModal());
             }
         }
 
-        // Supprimer un dossier de Firebase
         window.deleteCitizen = function(id) {
             if(confirm("Êtes-vous sûr de vouloir supprimer définitivement ce dossier médical ?")) {
                 remove(ref(db, 'citizens/' + id));
             }
         }
 
-        // Ouvrir et pré-remplir la Modal pour modification
         window.editCitizen = function(id) {
             const cit = citizens.find(c => c.id === id);
             if(cit) {
@@ -508,7 +498,6 @@
             }
         }
 
-        // Barre de recherche dynamique sur les données synchronisées
         window.searchCitizen = function() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = citizens.filter(c => 
