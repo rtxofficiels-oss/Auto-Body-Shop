@@ -318,7 +318,7 @@
         </div>
 
         <div class="grid" id="citizensGrid">
-        </div>
+            </div>
     </div>
 
     <div class="modal" id="citizenModal">
@@ -378,6 +378,7 @@
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
         import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+        // Configuration nettoyée de tout caractère invisible et configurée sur la zone Europe
         const firebaseConfig = {
             apiKey: "AIzaSyBFRmIFQMFhEcdNJZfWN4I5u31ierKlbs0",
             authDomain: "emergency-service-suivis.firebaseapp.com",
@@ -386,7 +387,7 @@
             messagingSenderId: "725400084570",
             appId: "1:725400084570:web:6692af8d0652926e1fb863",
             measurementId: "G-S0BM5DCTLK",
-            databaseURL: "https://console.firebase.google.com/u/0/project/emergency-service-suivis/database/emergency-service-suivis-default-rtdb/data"
+            databaseURL: "https://emergency-service-suivis-default-rtdb.europe-west1.firebasedatabase.app"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -397,14 +398,12 @@
 
         const db = getDatabase(app);
         const citizensRef = ref(db, 'citizens');
-
         let citizens = [];
 
-        // ÉCOUTE EN TEMPS RÉEL
+        // Écoute en temps réel de la base de données
         onValue(citizensRef, (snapshot) => {
             citizens = [];
             const data = snapshot.val();
-            
             if (data) {
                 Object.keys(data).forEach(key => {
                     citizens.push({ id: key, ...data[key] });
@@ -413,12 +412,12 @@
             renderCitizens(citizens);
         });
 
-        // Liaison des fonctions à l'objet GLOBAL Window (Pour régler le bug HTML/Module)
+        // Liaison globale pour affichage des cartes HTML
         window.renderCitizens = function(dataToRender = citizens) {
             const grid = document.getElementById('citizensGrid');
             grid.innerHTML = '';
 
-            if(dataToRender.length === 0) {
+            if (dataToRender.length === 0) {
                 grid.innerHTML = `<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Aucun dossier trouvé.</p>`;
                 return;
             }
@@ -455,8 +454,9 @@
                     </div>
                 `;
             });
-        }
+        };
 
+        // Sauvegarder ou mettre à jour un citoyen
         window.saveCitizen = function(e) {
             e.preventDefault();
             const id = document.getElementById('citizenId').value;
@@ -475,17 +475,19 @@
             } else {
                 push(citizensRef, citizenData).then(() => closeModal());
             }
-        }
+        };
 
+        // Supprimer un dossier médical
         window.deleteCitizen = function(id) {
-            if(confirm("Êtes-vous sûr de vouloir supprimer définitivement ce dossier médical ?")) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer définitivement ce dossier médical ?")) {
                 remove(ref(db, 'citizens/' + id));
             }
-        }
+        };
 
+        // Charger les données pour modification
         window.editCitizen = function(id) {
             const cit = citizens.find(c => c.id === id);
-            if(cit) {
+            if (cit) {
                 document.getElementById('modalTitle').innerText = "Modifier le Dossier";
                 document.getElementById('citizenId').value = cit.id;
                 document.getElementById('firstname').value = cit.firstname;
@@ -496,8 +498,9 @@
                 document.getElementById('notes').value = cit.notes;
                 document.getElementById('citizenModal').style.display = 'flex';
             }
-        }
+        };
 
+        // Système de recherche dynamique
         window.searchCitizen = function() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = citizens.filter(c => 
@@ -506,7 +509,7 @@
                 c.id.toLowerCase().includes(query)
             );
             renderCitizens(filtered);
-        }
+        };
     </script>
 
     <script>
