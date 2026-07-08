@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maze Realty | Los Santos Luxury Real Estate</title>
+    <title>Maze Realty | Catalogue Complet</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary: #d4af37; /* Or Premium */
+            --primary: #d4af37;
             --dark: #0a0a0a;
             --card-bg: #161616;
             --text: #ffffff;
@@ -18,36 +18,30 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
         body { background-color: var(--dark); color: var(--text); overflow-x: hidden; }
 
-        /* HEADER & NAVIGATION */
         header { background: rgba(10, 10, 10, 0.95); padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
         .logo { font-size: 26px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; }
         .logo span { color: var(--primary); }
         .discord-btn { background: var(--primary); color: var(--dark); padding: 12px 25px; text-decoration: none; font-weight: 700; border-radius: 5px; transition: 0.3s; display: flex; align-items: center; gap: 10px; text-transform: uppercase; font-size: 14px; }
         .discord-btn:hover { background: white; transform: translateY(-2px); }
 
-        /* HERO HERO HERO */
-        .hero { height: 45vh; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; border-bottom: 2px solid var(--primary); }
+        .hero { height: 40vh; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; border-bottom: 2px solid var(--primary); }
         .hero h1 { font-size: 3.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
         .hero h1 span { color: var(--primary); }
         
-        /* COUNTER STATS */
         .stats { display: flex; gap: 40px; margin-top: 20px; background: rgba(255,255,255,0.05); padding: 15px 30px; border-radius: 50px; border: 1px solid rgba(214, 175, 55, 0.2); }
         .stat-item { text-align: center; font-size: 14px; color: var(--text-secondary); font-weight: 600; }
         .stat-item strong { color: var(--primary); font-size: 18px; display: block; }
 
-        /* FILTRES BAR */
         .filter-container { text-align: center; padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
         .filter-btn { background: #111; border: 1px solid #333; color: var(--text-secondary); padding: 12px 26px; margin: 6px; cursor: pointer; font-size: 14px; font-weight: 700; border-radius: 4px; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; }
         .filter-btn.active, .filter-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(214, 175, 55, 0.05); }
 
-        /* DYNAMIC GRID */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 35px; padding: 0 50px 80px; max-width: 1400px; margin: 0 auto; }
         
-        /* PROPERTY CARDS */
         .card { background: var(--card-bg); border-radius: 8px; overflow: hidden; border: 1px solid #222; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(0,0,0,0.7); }
         
-        .img-container { position: relative; width: 100%; height: 220px; overflow: hidden; }
+        .img-container { position: relative; width: 100%; height: 220px; overflow: hidden; background: #222; }
         .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .card:hover .card-img { transform: scale(1.1); }
         
@@ -82,7 +76,7 @@
     </header>
 
     <section class="hero">
-        <h1>Immobilier de <span>Prestige</span></h1>
+        <h1>Catalogue <span>Immobilier</span></h1>
         <div class="stats">
             <div class="stat-item"><strong>46</strong> Habitations</div>
             <div class="stat-item"><strong>13</strong> Garages</div>
@@ -97,105 +91,115 @@
         <button class="filter-btn" onclick="filterMenu('entrepot')">Entrepôts & Spéciaux (11)</button>
     </div>
 
-    <!-- La grille qui va se remplir TOUTE SEULE grâce au JavaScript -->
     <div class="grid" id="property-grid"></div>
 
     <footer>
         <p>&copy; 2026 Maze Realty - Agence Immobilière Los Santos. Tous droits réservés.</p>
     </footer>
 
-    <!-- ========================================== -->
-    <!-- ⬇️ LE MOTEUR DU SITE (BASE DE DONNÉES) ⬇️ -->
-    <!-- ========================================== -->
     <script>
-        // ICI : Ta liste de biens. Pour en rajouter un, copie une ligne complète { ... }, et colle-la en dessous.
+        // BASE DE DONNÉES - MODIFIE LES LIGNES CI-DESSOUS
         const catalogue = [
-            // --- EXEMPLES HABITATIONS ---
-            {
-                category: 'habitation',
-                status: 'À Vendre',
-                typeLabel: 'Villa',
-                title: 'Villa Premium Rockford Hills',
-                location: '📍 Rockford Hills, Drive Lane',
-                price: '2 500 000 $',
-                image: 'https://images.unsplash.com/photo-1613490908592-fd5e16f9f24d?auto=format&fit=crop&w=600&q=80',
-                specs: ['🛌 4 Chambres', '🚿 3 SDB', '🚗 Garage 6 pl.']
-            },
-            {
-                category: 'habitation',
-                status: 'À Louer',
-                typeLabel: 'Appartement',
-                title: 'Penthouse Eclipse Towers',
-                location: '📍 Vinewood Boulevard',
-                price: '15 000 $ / sem',
-                image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80',
-                specs: ['🛌 2 Chambres', '🏙️ Vue Panoramique', '🏊 Piscine Résidence']
-            },
+            // ==========================================================================================================================================================
+            // 🏠 LES 46 HABITATIONS
+            // ==========================================================================================================================================================
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #01', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #02', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #03', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #04', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #05', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #06', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #07', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #08', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #09', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #10', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #11', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #12', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #13', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #14', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #15', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #16', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #17', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #18', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #19', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #20', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #21', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #22', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #23', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #24', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #25', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #26', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #27', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #28', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #29', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #30', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #31', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #32', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #33', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #34', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #35', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #36', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #37', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #38', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #39', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #40', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #41', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #42', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #43', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #44', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #45', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
+            { category: 'habitation', status: 'À Vendre', typeLabel: 'Maison', title: 'Habitation #46', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600', specs: ['🛌 - Ch', '🚗 - pl'] },
 
-            // --- EXEMPLES GARAGES ---
-            {
-                category: 'garage',
-                status: 'À Vendre',
-                typeLabel: 'Garage',
-                title: 'Garage Sous-terrain Popills',
-                location: '📍 Pillbox Hill',
-                price: '350 000 $',
-                image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?auto=format&fit=crop&w=600&q=80',
-                specs: ['🚗 10 Places', '🛠️ Atelier Custom', '🔒 Blindé']
-            },
+            // ==========================================================================================================================================================
+            // 🚗 LES 13 GARAGES
+            // ==========================================================================================================================================================
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #01', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #02', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #03', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #04', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #05', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #06', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #07', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #08', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #09', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #10', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #11', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #12', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
+            { category: 'garage', status: 'À Vendre', typeLabel: 'Garage', title: 'Garage #13', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1590461875185-3bc45474c100?w=600', specs: ['🚗 - pl', '🔒 Sécurisé'] },
 
-            // --- EXEMPLES ENTREPÔTS / SPECIAL ---
-            {
-                category: 'entrepot',
-                status: 'Business',
-                typeLabel: 'Entrepôt',
-                title: 'Hangar Logistique Industrial',
-                location: '📍 Elysian Island (Port)',
-                price: '850 000 $',
-                image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80',
-                specs: ['📦 500m² Stockage', '🚛 Accès Poids-Lourds']
-            },
-            {
-                category: 'entrepot',
-                status: 'Spécial',
-                typeLabel: 'Conteneur',
-                title: 'Conteneur Maritime Discret',
-                location: '📍 Terminal, Zone Sud',
-                price: '120 000 $',
-                image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=600&q=80',
-                specs: ['📦 Stockage Illégal', '🤫 Ultra Discret']
-            },
-            {
-                category: 'entrepot',
-                status: 'Militaire',
-                typeLabel: 'Bunker',
-                title: 'Bunker Souterrain Grapeseed',
-                location: '📍 Grand Senora Desert',
-                price: '5 000 000 $',
-                image: 'https://images.unsplash.com/photo-1517404281663-c4833e513f50?auto=format&fit=crop&w=600&q=80',
-                specs: ['🛡️ Anti-Nucléaire', '🔫 Stand de Tir', '🚗 Garage Camion']
-            }
+            // ==========================================================================================================================================================
+            // 📦 LES 11 ENTREPÔTS (Incluant 1 Conteneur et 1 Bunker)
+            // ==========================================================================================================================================================
+            { category: 'entrepot', status: 'Business', typeLabel: 'Entrepôt', title: 'Entrepôt #01', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600', specs: ['📦 - m²', '🚛 Poids-Lourds'] },
+            { category: 'entrepot', status: 'Business', typeLabel: 'Entrepôt', title: 'Entrepôt #02', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600', specs: ['📦 - m²', '🚛 Poids-Lourds'] },
+            { category: 'entrepot', status: 'Business', typeLabel: 'Entrepôt', title: 'Entrepôt #03', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600', specs: ['📦 - m²', '🚛 Poids-Lourds'] },
+            { category: 'entrepot', status: 'Business', typeLabel: 'Entrepôt', title: 'Entrepôt #04', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600', specs: ['📦 - m²', '🚛 Poids-Lourds'] },
+            { category: 'entrepot', status: 'Business', typeLabel: 'Entrepôt', title: 'Entrepôt #05', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600', specs: ['📦 - m²', '🚛 Poids-Lourds'] },
+            { category: 'entrepot', status: 'Business', typeLabel: 'Entrepôt', title: 'Entrepôt #06', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600', specs: ['📦 - m²', '🚛 Poids-Lourds'] },
+            { category: 'entrepot', status: 'Business', typeLabel: 'Entrepôt', title: 'Entrepôt #07', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600', specs: ['📦 - m²', '🚛 Poids-Lourds'] },
+            { category: 'entrepot', status: 'Business', typeLabel: 'Entrepôt', title: 'Entrepôt #08', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600', specs: ['📦 - m²', '🚛 Poids-Lourds'] },
+            { category: 'entrepot', status: 'Business', typeLabel: 'Entrepôt', title: 'Entrepôt #09', location: '📍 À modifier', price: 'Prix $', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600', specs: ['📦 - m²', '🚛 Poids-Lourds'] },
+            { category: 'entrepot', status: 'Discret', typeLabel: 'Conteneur', title: 'Conteneur Maritime #10', location: '📍 Port de LS', price: 'Prix $', image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=600', specs: ['📦 Stockage', '🤫 Secret'] },
+            { category: 'entrepot', status: 'Sécurisé', typeLabel: 'Bunker', title: 'Bunker Souterrain #11', location: '📍 Désert de Grand Senora', price: 'Prix $', image: 'https://images.unsplash.com/photo-1517404281663-c4833e513f50?w=600', specs: ['🛡️ Blindé', '🚗 Garage Camion'] }
         ];
 
-        // Fonction magique qui génère le HTML automatiquement
+        // MOTEUR DE RENDU DU SITE
         function renderGrid(properties) {
             const grid = document.getElementById('property-grid');
-            grid.innerHTML = ''; // On vide
+            grid.innerHTML = '';
 
             properties.forEach(item => {
-                // Génération des petits tags dynamiques (specs)
                 let specsHTML = '';
                 item.specs.forEach(spec => {
                     specsHTML += `<span class="spec-tag">${spec}</span>`;
                 });
 
-                // Structure de la carte
                 const cardHTML = `
                     <div class="card">
                         <div class="img-container">
                             <span class="badge">${item.status}</span>
                             <span class="sub-badge">${item.typeLabel}</span>
-                            <img src="${item.image}" alt="${item.title}" class="card-img">
+                            <img src="${item.image}" alt="${item.title}" class="card-img" loading="lazy">
                         </div>
                         <div class="card-content">
                             <div>
@@ -212,12 +216,10 @@
             });
         }
 
-        // Fonction pour filtrer au clic sur les boutons
         function filterMenu(category) {
-            // Boutons actifs
             let buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if(event) event.target.classList.add('active');
 
             if(category === 'all') {
                 renderGrid(catalogue);
@@ -227,7 +229,7 @@
             }
         }
 
-        // Lancement initial du site au chargement de la page
+        // Premier affichage au chargement
         renderGrid(catalogue);
     </script>
 </body>
