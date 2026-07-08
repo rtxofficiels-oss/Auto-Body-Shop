@@ -3,189 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynasty Real Estate | Los Santos</title>
-    <!-- Polices Google et Icônes -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>DYNASTY 8 | Agence Immobilière Los Santos</title>
     <style>
-        /* --- VARIABLES & RESET --- */
+        /* --- VARIABLES & BASE --- */
         :root {
-            --primary: #d4af37; /* Or Premium */
-            --dark: #121212;
-            --gray: #242424;
-            --text: #f4f4f4;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --gold: #f59e0b;
+            --gold-hover: #d97706;
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
-        body { background-color: var(--dark); color: var(--text); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
 
-        /* --- NAVBAR --- */
-        header { background: rgba(18, 18, 18, 0.95); padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--primary); }
-        .logo { font-size: 24px; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 2px; }
-        .logo span { color: var(--primary); }
-        .nav-btn { background: var(--primary); color: var(--dark); padding: 10px 20px; text-decoration: none; font-weight: 600; border-radius: 4px; transition: 0.3s; }
-        .nav-btn:hover { background: white; }
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; background: rgba(15, 23, 42, 0.95);
+            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #334155;
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; }
+        .nav-links a { margin-left: 20px; font-weight: 600; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--gold); }
+        .btn-discord { background: #5865F2; padding: 10px 20px; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+        .btn-discord:hover { background: #4752c4; }
 
         /* --- HERO SECTION --- */
-        .hero { height: 60vh; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-        .hero h1 { font-size: 3rem; margin-bottom: 10px; text-transform: uppercase; }
-        .hero p { font-size: 1.2rem; color: #ccc; margin-bottom: 20px; }
+        .hero {
+            height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            background: linear-gradient(rgba(15, 23, 42, 0.7), var(--bg-dark)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80') center/cover;
+            padding: 0 20px;
+        }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 3px; }
+        .hero p { font-size: 1.2rem; color: var(--text-gray); max-width: 600px; margin-bottom: 20px; }
+        .btn-gold { background: var(--gold); color: #000; padding: 12px 30px; border-radius: 5px; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        .btn-gold:hover { background: var(--gold-hover); }
 
-        /* --- FILTER BAR --- */
-        .filters { text-align: center; padding: 40px 20px 20px; }
-        .filter-btn { background: transparent; border: 1px solid var(--primary); color: var(--text); padding: 10px 20px; margin: 5px; cursor: pointer; font-size: 16px; border-radius: 20px; transition: 0.3s; }
-        .filter-btn.active, .filter-btn:hover { background: var(--primary); color: var(--dark); font-weight: 600; }
+        /* --- FILTRES DE RECHERCHE --- */
+        .container { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
+        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 30px; color: var(--gold); }
+        
+        .filters { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 40px; }
+        .filter-btn {
+            background: #334155; color: white; border: none; padding: 10px 25px;
+            border-radius: 30px; cursor: pointer; font-weight: 600; transition: 0.3s;
+        }
+        .filter-btn.active, .filter-btn:hover { background: var(--gold); color: #000; }
 
-        /* --- PROPERTY GRID --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 20px 50px 60px; max-width: 1400px; margin: 0 auto; }
-        
-        .card { background: var(--gray); border-radius: 10px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: transform 0.3s; display: none; }
-        .card.show { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2); }
-        .card-img { width: 100%; height: 200px; object-fit: cover; border-bottom: 3px solid var(--primary); }
-        .card-content { padding: 20px; }
-        .badge { background: var(--primary); color: var(--dark); padding: 4px 10px; font-size: 12px; font-weight: bold; border-radius: 4px; display: inline-block; margin-bottom: 10px; text-transform: uppercase; }
-        .card h3 { font-size: 1.2rem; margin-bottom: 10px; }
-        .price { font-size: 1.5rem; color: var(--primary); font-weight: 800; margin-bottom: 15px; }
-        
-        .features { display: flex; justify-content: space-between; border-top: 1px solid #444; padding-top: 15px; color: #aaa; font-size: 0.9rem; }
-        .features i { color: var(--primary); margin-right: 5px; }
+        /* --- GRILLE DES BIENS --- */
+        .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
+        .card {
+            background: var(--card-bg); border-radius: 10px; overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: transform 0.3s, opacity 0.3s;
+            border: 1px solid #334155; display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .card-img { height: 220px; width: 100%; object-fit: cover; }
+        .card-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .tag { background: rgba(245, 158, 11, 0.2); color: var(--gold); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; align-self: flex-start; margin-bottom: 10px; }
+        .card-title { font-size: 1.4rem; margin-bottom: 5px; }
+        .card-location { color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px; }
+        .card-price { font-size: 1.6rem; font-weight: bold; color: var(--gold); margin-bottom: 15px; }
+        .card-specs { display: flex; justify-content: space-between; border-top: 1px solid #334155; padding-top: 15px; color: var(--text-gray); font-size: 0.9rem; margin-bottom: 20px; }
+        .btn-card { display: block; text-align: center; background: #334155; color: white; padding: 10px; border-radius: 5px; transition: 0.3s; font-weight: bold; }
+        .card:hover .btn-card { background: var(--gold); color: #000; }
 
-        /* --- FOOTER --- */
-        footer { background: #0a0a0a; text-align: center; padding: 30px; font-size: 0.9rem; color: #666; border-top: 1px solid #222; }
+        /* --- CONTACT & FOOTER --- */
+        .contact-section { background: var(--card-bg); padding: 60px 20px; text-align: center; margin-top: 80px; border-top: 1px solid #334155; }
+        .contact-section p { color: var(--text-gray); margin-bottom: 30px; font-size: 1.1rem; }
+        footer { text-align: center; padding: 30px; font-size: 0.9rem; color: var(--text-gray); border-top: 1px solid #1e293b; }
 
         @media (max-width: 768px) {
-            header, .grid { padding: 20px; }
-            .hero h1 { font-size: 2rem; }
+            .hero h1 { font-size: 2.2rem; }
+            nav { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- EN-TÊTE -->
-    <header>
-        <div class="logo">Dynasty <span>8</span></div>
-        <a href="VOTRE_LIEN_DISCORD" class="nav-btn"><i class="fab fa-discord"></i> Rejoindre la Ville</a>
-    </header>
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="logo">🏢 Dynasty 8</div>
+        <div class="nav-links">
+            <a href="#catalogue">Nos Biens</a>
+            <a href="#contact">Contact</a>
+            <a href="TON_LIEN_DISCORD_ICI" target="_blank" class="btn-discord">👥 Rejoindre le Discord</a>
+        </div>
+    </nav>
 
-    <!-- SECTION PRINCIPALE -->
-    <section class="hero">
-        <h1>L'Excellence Immobilière</h1>
-        <p>Maisons, Appartements, Commerces. Prenez le contrôle de Los Santos.</p>
-    </section>
-
-    <!-- FILTRES -->
-    <div class="filters">
-        <button class="filter-btn active" onclick="filterObjects('all')">Tous les biens</button>
-        <button class="filter-btn" onclick="filterObjects('maison')">Maisons de Luxe</button>
-        <button class="filter-btn" onclick="filterObjects('appartement')">Appartements</button>
-        <button class="filter-btn" onclick="filterObjects('garage')">Garages</button>
-        <button class="filter-btn" onclick="filterObjects('entrepot')">Entrepôts</button>
+    <!-- HERO SECTION -->
+    <div class="hero">
+        <h1>L'Élite de l'Immobilier</h1>
+        <p>Maisons de luxe, appartements modernes, entrepôts sécurisés et garages custom dans tout Los Santos.</p>
+        <a href="#catalogue" class="btn-gold">Consulter le catalogue</a>
     </div>
 
-    <!-- GRILLE DES ANNONCES -->
-    <div class="grid">
+    <!-- CATALOGUE AVEC FILTRES -->
+    <div class="container" id="catalogue">
+        <h2 class="section-title">Catalogue des Biens</h2>
         
-        <!-- BIEN 1 : MAISON -->
-        <div class="card maison show">
-            <img src="https://images.unsplash.com/photo-1613490908592-fd5e16f9f24d?auto=format&fit=crop&w=600&q=80" alt="Villa" class="card-img">
-            <div class="card-content">
-                <span class="badge">À Vendre</span>
-                <h3>Villa Rockford Hills</h3>
-                <div class="price">$2,500,000</div>
-                <div class="features">
-                    <span><i class="fas fa-bed"></i> 4</span>
-                    <span><i class="fas fa-bath"></i> 3</span>
-                    <span><i class="fas fa-car"></i> 6 places</span>
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterSelection('all', this)">Tout voir</button>
+            <button class="filter-btn" onclick="filterSelection('maison', this)">🏡 Maisons & Villas</button>
+            <button class="filter-btn" onclick="filterSelection('appartement', this)">🏢 Appartements</button>
+            <button class="filter-btn" onclick="filterSelection('entrepot', this)">📦 Entrepôts</button>
+            <button class="filter-btn" onclick="filterSelection('garage', this)">🚗 Garages</button>
+        </div>
+
+        <div class="property-grid">
+            <!-- BIEN 1 : VILLA -->
+            <div class="card" data-category="maison">
+                <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80" alt="Villa" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="tag">Maison</span>
+                        <h3 class="card-title">Villa Moderniste</h3>
+                        <p class="card-location">📍 Richman Hills, Los Santos</p>
+                        <div class="card-price">4 500 000 $</div>
+                        <div class="card-specs">
+                            <span>🛏️ 5 Chambres</span>
+                            <span>🚗 Garage 6 places</span>
+                            <span>🏊 Piscine</span>
+                        </div>
+                    </div>
+                    <a href="TON_LIEN_DISCORD_ICI" target="_blank" class="btn-card">Contacter un agent</a>
+                </div>
+            </div>
+
+            <!-- BIEN 2 : APPARTEMENT -->
+            <div class="card" data-category="appartement">
+                <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80" alt="Appartement" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="tag">Appartement</span>
+                        <h3 class="card-title">Penthouse Vue Mer</h3>
+                        <p class="card-location">📍 Eclipse Towers, Del Perro</p>
+                        <div class="card-price">1 200 000 $</div>
+                        <div class="card-specs">
+                            <span>🛏️ 2 Chambres</span>
+                            <span>🚗 Garage 10 places</span>
+                            <span>🌆 Vue 360°</span>
+                        </div>
+                    </div>
+                    <a href="TON_LIEN_DISCORD_ICI" target="_blank" class="btn-card">Contacter un agent</a>
+                </div>
+            </div>
+
+            <!-- BIEN 3 : ENTREPOT -->
+            <div class="card" data-category="entrepot">
+                <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80" alt="Entrepôt" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="tag">Entrepôt</span>
+                        <h3 class="card-title">Hangar Logistique de Luxe</h3>
+                        <p class="card-location">📍 Elysian Island (Port)</p>
+                        <div class="card-price">850 000 $</div>
+                        <div class="card-specs">
+                            <span>📦 500m² Stockage</span>
+                            <span>🔒 Accès Sécurisé</span>
+                            <span>🚛 Accès Poids-Lourds</span>
+                        </div>
+                    </div>
+                    <a href="TON_LIEN_DISCORD_ICI" target="_blank" class="btn-card">Contacter un agent</a>
+                </div>
+            </div>
+
+            <!-- BIEN 4 : GARAGE -->
+            <div class="card" data-category="garage">
+                <img src="https://images.unsplash.com/photo-1613214149922-f1809c99b414?auto=format&fit=crop&w=800&q=80" alt="Garage" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="tag">Garage</span>
+                        <h3 class="card-title">Garage Custom & Atelier</h3>
+                        <p class="card-location">📍 La Mesa, Los Santos</p>
+                        <div class="card-price">350 000 $</div>
+                        <div class="card-specs">
+                            <span>🚗 10 Places</span>
+                            <span>🔧 Équipé mécanique</span>
+                            <span>📹 Caméras 24/7</span>
+                        </div>
+                    </div>
+                    <a href="TON_LIEN_DISCORD_ICI" target="_blank" class="btn-card">Contacter un agent</a>
+                </div>
+            </div>
+
+            <!-- BIEN 5 : MAISON BANLIEUE -->
+            <div class="card" data-category="maison">
+                <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80" alt="Maison" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="tag">Maison</span>
+                        <h3 class="card-title">Pavillon Américain</h3>
+                        <p class="card-location">📍 Mirror Park</p>
+                        <div class="card-price">650 000 $</div>
+                        <div class="card-specs">
+                            <span>🛏️ 3 Chambres</span>
+                            <span>🚗 Garage 2 places</span>
+                            <span>🌳 Grand Jardin</span>
+                        </div>
+                    </div>
+                    <a href="TON_LIEN_DISCORD_ICI" target="_blank" class="btn-card">Contacter un agent</a>
+                </div>
+            </div>
+
+            <!-- BIEN 6 : APPARTEMENT LOFT -->
+            <div class="card" data-category="appartement">
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80" alt="Loft" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="tag">Appartement</span>
+                        <h3 class="card-title">Loft Industriel</h3>
+                        <p class="card-location">📍 Burton, Centre-Ville</p>
+                        <div class="card-price">500 000 $</div>
+                        <div class="card-specs">
+                            <span>🛏️ 1 Chambre</span>
+                            <span>🎨 Style Moderne</span>
+                            <span>🚇 Proche Métro</span>
+                        </div>
+                    </div>
+                    <a href="TON_LIEN_DISCORD_ICI" target="_blank" class="btn-card">Contacter un agent</a>
                 </div>
             </div>
         </div>
-
-        <!-- BIEN 2 : APPARTEMENT -->
-        <div class="card appartement show">
-            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80" alt="Appartement" class="card-img">
-            <div class="card-content">
-                <span class="badge">À Louer</span>
-                <h3>Penthouse Eclipse Towers</h3>
-                <div class="price">$15,000 / sem</div>
-                <div class="features">
-                    <span><i class="fas fa-bed"></i> 2</span>
-                    <span><i class="fas fa-bath"></i> 2</span>
-                    <span><i class="fas fa-city"></i> Vue Ville</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- BIEN 3 : ENTREPÔT -->
-        <div class="card entrepot show">
-            <img src="https://images.unsplash.com/photo-1586528116311-ad8ed7c66364?auto=format&fit=crop&w=600&q=80" alt="Entrepot" class="card-img">
-            <div class="card-content">
-                <span class="badge">Business</span>
-                <h3>Entrepôt La Mesa</h3>
-                <div class="price">$850,000</div>
-                <div class="features">
-                    <span><i class="fas fa-box"></i> Grand Stock</span>
-                    <span><i class="fas fa-truck"></i> Accès Camion</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- BIEN 4 : GARAGE -->
-        <div class="card garage show">
-            <img src="https://images.unsplash.com/photo-1590461875185-3bc45474c100?auto=format&fit=crop&w=600&q=80" alt="Garage" class="card-img">
-            <div class="card-content">
-                <span class="badge">À Vendre</span>
-                <h3>Garage Vinewood</h3>
-                <div class="price">$200,000</div>
-                <div class="features">
-                    <span><i class="fas fa-car"></i> 10 places</span>
-                    <span><i class="fas fa-tools"></i> Équipé</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- BIEN 5 : MAISON -->
-        <div class="card maison show">
-            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" alt="Maison" class="card-img">
-            <div class="card-content">
-                <span class="badge">À Vendre</span>
-                <h3>Maison Vespucci Canals</h3>
-                <div class="price">$950,000</div>
-                <div class="features">
-                    <span><i class="fas fa-bed"></i> 3</span>
-                    <span><i class="fas fa-water"></i> Accès Canal</span>
-                </div>
-            </div>
-        </div>
-
     </div>
 
+    <!-- SECTION CONTACT -->
+    <div class="contact-section" id="contact">
+        <h2 class="section-title">Besoin d'un bien sur-mesure ?</h2>
+        <p>Nos agents sont disponibles 24/7 en ville pour des visites privées ou des estimations de rachat.</p>
+        <a href="TON_LIEN_DISCORD_ICI" target="_blank" class="btn-gold" style="font-size: 1.2rem; padding: 15px 40px;">Prendre RDV sur Discord</a>
+    </div>
+
+    <!-- FOOTER -->
     <footer>
-        <p>&copy; 2026 Dynasty 8 - Agence Immobilière de Los Santos (GTA RP).</p>
+        <p>© 2026 Dynasty 8 Los Santos - Serveur GTA RP</p>
+        <p style="font-size: 0.8rem; margin-top: 5px;">Site vitrine RP - Toutes les données sont fictives et liées au jeu.</p>
     </footer>
 
-    <!-- SCRIPT POUR LE FILTRE -->
+    <!-- JAVASCRIPT POUR LE SYSTÈME DE FILTRES -->
     <script>
-        function filterObjects(category) {
-            // Gérer les boutons actifs
+        function filterSelection(category, btn) {
+            // Gérer le bouton actif (couleur dorée)
             let buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            buttons.forEach(button => button.classList.remove('active'));
+            btn.classList.add('active');
 
             // Gérer l'affichage des cartes
             let cards = document.querySelectorAll('.card');
             cards.forEach(card => {
-                card.classList.remove('show');
-                if (category === 'all') {
-                    card.classList.add('show');
-                } else if (card.classList.contains(category)) {
-                    card.classList.add('show');
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                    setTimeout(() => card.style.opacity = '1', 50);
+                } else {
+                    card.style.opacity = '0';
+                    setTimeout(() => card.style.display = 'none', 300);
                 }
             });
         }
     </script>
-
 </body>
 </html>
