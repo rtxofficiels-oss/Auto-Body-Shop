@@ -3,526 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDT - EMS Los Santos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Dynasty Real Estate | Los Santos</title>
+    <!-- Polices Google et Icônes -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- VARIABLES & RESET --- */
         :root {
-            --primary: #c0392b;
-            --primary-hover: #a93226;
-            --dark-bg: #121212;
-            --card-bg: #1c1c1c;
-            --text-color: #e0e0e0;
-            --text-muted: #888888;
-            --border-color: #2c2c2c;
-            --success: #27ae60;
-            --warning: #f39c12;
+            --primary: #d4af37; /* Or Premium */
+            --dark: #121212;
+            --gray: #242424;
+            --text: #f4f4f4;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { background-color: var(--dark); color: var(--text); }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-        }
+        /* --- NAVBAR --- */
+        header { background: rgba(18, 18, 18, 0.95); padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--primary); }
+        .logo { font-size: 24px; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 2px; }
+        .logo span { color: var(--primary); }
+        .nav-btn { background: var(--primary); color: var(--dark); padding: 10px 20px; text-decoration: none; font-weight: 600; border-radius: 4px; transition: 0.3s; }
+        .nav-btn:hover { background: white; }
 
-        body {
-            background-color: var(--dark-bg);
-            color: var(--text-color);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+        /* --- HERO SECTION --- */
+        .hero { height: 60vh; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 10px; text-transform: uppercase; }
+        .hero p { font-size: 1.2rem; color: #ccc; margin-bottom: 20px; }
 
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 260px;
-            background-color: #0a0a0a;
-            border-right: 2px solid var(--primary);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-        }
+        /* --- FILTER BAR --- */
+        .filters { text-align: center; padding: 40px 20px 20px; }
+        .filter-btn { background: transparent; border: 1px solid var(--primary); color: var(--text); padding: 10px 20px; margin: 5px; cursor: pointer; font-size: 16px; border-radius: 20px; transition: 0.3s; }
+        .filter-btn.active, .filter-btn:hover { background: var(--primary); color: var(--dark); font-weight: 600; }
 
-        .logo-area {
-            text-align: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
+        /* --- PROPERTY GRID --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 20px 50px 60px; max-width: 1400px; margin: 0 auto; }
+        
+        .card { background: var(--gray); border-radius: 10px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: transform 0.3s; display: none; }
+        .card.show { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2); }
+        .card-img { width: 100%; height: 200px; object-fit: cover; border-bottom: 3px solid var(--primary); }
+        .card-content { padding: 20px; }
+        .badge { background: var(--primary); color: var(--dark); padding: 4px 10px; font-size: 12px; font-weight: bold; border-radius: 4px; display: inline-block; margin-bottom: 10px; text-transform: uppercase; }
+        .card h3 { font-size: 1.2rem; margin-bottom: 10px; }
+        .price { font-size: 1.5rem; color: var(--primary); font-weight: 800; margin-bottom: 15px; }
+        
+        .features { display: flex; justify-content: space-between; border-top: 1px solid #444; padding-top: 15px; color: #aaa; font-size: 0.9rem; }
+        .features i { color: var(--primary); margin-right: 5px; }
 
-        .logo-area i {
-            font-size: 3rem;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
+        /* --- FOOTER --- */
+        footer { background: #0a0a0a; text-align: center; padding: 30px; font-size: 0.9rem; color: #666; border-top: 1px solid #222; }
 
-        .logo-area h1 {
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .nav-links {
-            list-style: none;
-            margin-top: 30px;
-            flex-grow: 1;
-        }
-
-        .nav-links li {
-            margin-bottom: 15px;
-        }
-
-        .nav-links a {
-            display: flex;
-            align-items: center;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        .nav-links a:hover, .nav-links a.active {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .nav-links i {
-            margin-right: 15px;
-            font-size: 1.1rem;
-        }
-
-        .sidebar-footer {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-align: center;
-            border-top: 1px solid var(--border-color);
-            padding-top: 15px;
-        }
-
-        /* --- MAIN CONTENT --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 30px;
-            overflow-y: auto;
-            background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-        }
-
-        .search-bar {
-            position: relative;
-            width: 300px;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 10px 15px 10px 40px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            color: white;
-        }
-
-        .search-bar i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        /* --- BUTTONS --- */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-primary:hover { background-color: var(--primary-hover); }
-        .btn-secondary { background-color: #444; color: white; }
-        .btn-secondary:hover { background-color: #555; }
-        .btn-danger { background-color: #c0392b; color: white; }
-        .btn-small { padding: 5px 10px; font-size: 0.85rem; }
-
-        /* --- CARDS & GRID --- */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-        }
-
-        .citizen-card {
-            background-color: var(--card-bg);
-            border-left: 4px solid var(--primary);
-            border-radius: 5px;
-            padding: 20px;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .citizen-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 5px;
-            color: white;
-        }
-
-        .citizen-id {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-
-        .info-label { color: var(--text-muted); }
-
-        .blood-type {
-            background-color: rgba(192, 57, 43, 0.2);
-            color: #ff6b6b;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-weight: bold;
-        }
-
-        .card-actions {
-            margin-top: 15px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 12px;
-        }
-
-        /* --- MODAL FORM --- */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            border: 1px solid var(--primary);
-            border-radius: 8px;
-            width: 500px;
-            max-width: 90%;
-            padding: 25px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            background-color: #121212;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            color: white;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            height: 80px;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
+        @media (max-width: 768px) {
+            header, .grid { padding: 20px; }
+            .hero h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="logo-area">
-            <i class="fa-solid fa-heart-pulse"></i>
-            <h1>EMS Los Santos</h1>
-            <p style="color: var(--text-muted); font-size: 0.8rem;">MDT Médical v2.1</p>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#" class="active"><i class="fa-solid fa-folder-open"></i> Base Citoyens</a></li>
-        </ul>
-        <div class="sidebar-footer">
-            Base de données sécurisée
-        </div>
+    <!-- EN-TÊTE -->
+    <header>
+        <div class="logo">Dynasty <span>8</span></div>
+        <a href="VOTRE_LIEN_DISCORD" class="nav-btn"><i class="fab fa-discord"></i> Rejoindre la Ville</a>
+    </header>
+
+    <!-- SECTION PRINCIPALE -->
+    <section class="hero">
+        <h1>L'Excellence Immobilière</h1>
+        <p>Maisons, Appartements, Commerces. Prenez le contrôle de Los Santos.</p>
+    </section>
+
+    <!-- FILTRES -->
+    <div class="filters">
+        <button class="filter-btn active" onclick="filterObjects('all')">Tous les biens</button>
+        <button class="filter-btn" onclick="filterObjects('maison')">Maisons de Luxe</button>
+        <button class="filter-btn" onclick="filterObjects('appartement')">Appartements</button>
+        <button class="filter-btn" onclick="filterObjects('garage')">Garages</button>
+        <button class="filter-btn" onclick="filterObjects('entrepot')">Entrepôts</button>
     </div>
 
-    <div class="main-content">
-        <div class="header">
-            <h2>Gestion des Dossiers Médicaux</h2>
-            <div style="display: flex; gap: 15px;">
-                <div class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="searchInput" placeholder="Rechercher un citoyen..." onkeyup="searchCitizen()">
-                </div>
-                <button class="btn btn-primary" onclick="openModal()"><i class="fa-solid fa-plus"></i> Nouveau Dossier</button>
-            </div>
-        </div>
-
-        <div class="grid" id="citizensGrid">
-            </div>
-    </div>
-
-    <div class="modal" id="citizenModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Créer un Dossier Médical</h3>
-                <button class="close-modal" onclick="closeModal()">&times;</button>
-            </div>
-            <form id="citizenForm" onsubmit="saveCitizen(event)">
-                <input type="hidden" id="citizenId">
-                
-                <div class="form-group">
-                    <label for="firstname">Prénom</label>
-                    <input type="text" id="firstname" class="form-control" required placeholder="John">
-                </div>
-                <div class="form-group">
-                    <label for="lastname">Nom</label>
-                    <input type="text" id="lastname" class="form-control" required placeholder="Doe">
-                </div>
-                <div class="form-group">
-                    <label for="phone">Numéro de Téléphone</label>
-                    <input type="text" id="phone" class="form-control" placeholder="555-XXXX">
-                </div>
-                <div class="form-group">
-                    <label for="bloodtype">Groupe Sanguin</label>
-                    <select id="bloodtype" class="form-control">
-                        <option value="Inconnu">Inconnu</option>
-                        <option value="A+">A+</option>
-                        <option value="A-">A-</option>
-                        <option value="B+">B+</option>
-                        <option value="B-">B-</option>
-                        <option value="AB+">AB+</option>
-                        <option value="AB-">AB-</option>
-                        <option value="O+">O+</option>
-                        <option value="O-">O-</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="pathologies">Pathologies / Allergies</label>
-                    <textarea id="pathologies" class="form-control" placeholder="Ex: Diabète, Allergie à la Pénicilline..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="notes">Notes d'interventions antérieures</label>
-                    <textarea id="notes" class="form-control" placeholder="Notes de l'EMS..."></textarea>
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-        import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        // Configuration nettoyée de tout caractère invisible et configurée sur la zone Europe
-        const firebaseConfig = {
-            apiKey: "AIzaSyBFRmIFQMFhEcdNJZfWN4I5u31ierKlbs0",
-            authDomain: "emergency-service-suivis.firebaseapp.com",
-            projectId: "emergency-service-suivis",
-            storageBucket: "emergency-service-suivis.firebasestorage.app",
-            messagingSenderId: "725400084570",
-            appId: "1:725400084570:web:6692af8d0652926e1fb863",
-            measurementId: "G-S0BM5DCTLK",
-            databaseURL: "https://emergency-service-suivis-default-rtdb.europe-west1.firebasedatabase.app"
-        };
-
-        const app = initializeApp(firebaseConfig);
+    <!-- GRILLE DES ANNONCES -->
+    <div class="grid">
         
-        if (window.location.protocol !== "file:") {
-            getAnalytics(app);
-        }
+        <!-- BIEN 1 : MAISON -->
+        <div class="card maison show">
+            <img src="https://images.unsplash.com/photo-1613490908592-fd5e16f9f24d?auto=format&fit=crop&w=600&q=80" alt="Villa" class="card-img">
+            <div class="card-content">
+                <span class="badge">À Vendre</span>
+                <h3>Villa Rockford Hills</h3>
+                <div class="price">$2,500,000</div>
+                <div class="features">
+                    <span><i class="fas fa-bed"></i> 4</span>
+                    <span><i class="fas fa-bath"></i> 3</span>
+                    <span><i class="fas fa-car"></i> 6 places</span>
+                </div>
+            </div>
+        </div>
 
-        const db = getDatabase(app);
-        const citizensRef = ref(db, 'citizens');
-        let citizens = [];
+        <!-- BIEN 2 : APPARTEMENT -->
+        <div class="card appartement show">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80" alt="Appartement" class="card-img">
+            <div class="card-content">
+                <span class="badge">À Louer</span>
+                <h3>Penthouse Eclipse Towers</h3>
+                <div class="price">$15,000 / sem</div>
+                <div class="features">
+                    <span><i class="fas fa-bed"></i> 2</span>
+                    <span><i class="fas fa-bath"></i> 2</span>
+                    <span><i class="fas fa-city"></i> Vue Ville</span>
+                </div>
+            </div>
+        </div>
 
-        // Écoute en temps réel de la base de données
-        onValue(citizensRef, (snapshot) => {
-            citizens = [];
-            const data = snapshot.val();
-            if (data) {
-                Object.keys(data).forEach(key => {
-                    citizens.push({ id: key, ...data[key] });
-                });
-            }
-            renderCitizens(citizens);
-        });
+        <!-- BIEN 3 : ENTREPÔT -->
+        <div class="card entrepot show">
+            <img src="https://images.unsplash.com/photo-1586528116311-ad8ed7c66364?auto=format&fit=crop&w=600&q=80" alt="Entrepot" class="card-img">
+            <div class="card-content">
+                <span class="badge">Business</span>
+                <h3>Entrepôt La Mesa</h3>
+                <div class="price">$850,000</div>
+                <div class="features">
+                    <span><i class="fas fa-box"></i> Grand Stock</span>
+                    <span><i class="fas fa-truck"></i> Accès Camion</span>
+                </div>
+            </div>
+        </div>
 
-        // Liaison globale pour affichage des cartes HTML
-        window.renderCitizens = function(dataToRender = citizens) {
-            const grid = document.getElementById('citizensGrid');
-            grid.innerHTML = '';
+        <!-- BIEN 4 : GARAGE -->
+        <div class="card garage show">
+            <img src="https://images.unsplash.com/photo-1590461875185-3bc45474c100?auto=format&fit=crop&w=600&q=80" alt="Garage" class="card-img">
+            <div class="card-content">
+                <span class="badge">À Vendre</span>
+                <h3>Garage Vinewood</h3>
+                <div class="price">$200,000</div>
+                <div class="features">
+                    <span><i class="fas fa-car"></i> 10 places</span>
+                    <span><i class="fas fa-tools"></i> Équipé</span>
+                </div>
+            </div>
+        </div>
 
-            if (dataToRender.length === 0) {
-                grid.innerHTML = `<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">Aucun dossier trouvé.</p>`;
-                return;
-            }
+        <!-- BIEN 5 : MAISON -->
+        <div class="card maison show">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" alt="Maison" class="card-img">
+            <div class="card-content">
+                <span class="badge">À Vendre</span>
+                <h3>Maison Vespucci Canals</h3>
+                <div class="price">$950,000</div>
+                <div class="features">
+                    <span><i class="fas fa-bed"></i> 3</span>
+                    <span><i class="fas fa-water"></i> Accès Canal</span>
+                </div>
+            </div>
+        </div>
 
-            dataToRender.forEach(citizen => {
-                grid.innerHTML += `
-                    <div class="citizen-card">
-                        <h3>${citizen.firstname} ${citizen.lastname}</h3>
-                        <div class="citizen-id">ID DOSSIER: #LS-${citizen.id.slice(-5)}</div>
-                        
-                        <div class="info-row">
-                            <span class="info-label"><i class="fa-solid fa-phone"></i> Tél:</span>
-                            <span>${citizen.phone || 'Non renseigné'}</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label"><i class="fa-solid fa-droplet"></i> Sang:</span>
-                            <span class="blood-type">${citizen.bloodtype}</span>
-                        </div>
-                        <div class="info-row" style="flex-direction: column; margin-top: 10px;">
-                            <span class="info-label">Pathologies/Allergies:</span>
-                            <span style="color: #f39c12; font-size: 0.85rem; margin-top: 2px;">${citizen.pathologies || 'Aucune'}</span>
-                        </div>
-                        <div class="info-row" style="flex-direction: column; margin-top: 10px;">
-                            <span class="info-label">Notes Médicales:</span>
-                            <p style="font-size: 0.85rem; background: #121212; padding: 8px; border-radius: 4px; margin-top: 4px; border: 1px solid #222;">
-                                ${citizen.notes || 'Aucune note.'}
-                            </p>
-                        </div>
+    </div>
 
-                        <div class="card-actions">
-                            <button class="btn btn-secondary btn-small" onclick="editCitizen('${citizen.id}')"><i class="fa-solid fa-pen"></i> Modifier</button>
-                            <button class="btn btn-danger btn-small" onclick="deleteCitizen('${citizen.id}')"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-        };
+    <footer>
+        <p>&copy; 2026 Dynasty 8 - Agence Immobilière de Los Santos (GTA RP).</p>
+    </footer>
 
-        // Sauvegarder ou mettre à jour un citoyen
-        window.saveCitizen = function(e) {
-            e.preventDefault();
-            const id = document.getElementById('citizenId').value;
-            
-            const citizenData = {
-                firstname: document.getElementById('firstname').value,
-                lastname: document.getElementById('lastname').value,
-                phone: document.getElementById('phone').value,
-                bloodtype: document.getElementById('bloodtype').value,
-                pathologies: document.getElementById('pathologies').value,
-                notes: document.getElementById('notes').value
-            };
-
-            if (id) {
-                update(ref(db, 'citizens/' + id), citizenData).then(() => closeModal());
-            } else {
-                push(citizensRef, citizenData).then(() => closeModal());
-            }
-        };
-
-        // Supprimer un dossier médical
-        window.deleteCitizen = function(id) {
-            if (confirm("Êtes-vous sûr de vouloir supprimer définitivement ce dossier médical ?")) {
-                remove(ref(db, 'citizens/' + id));
-            }
-        };
-
-        // Charger les données pour modification
-        window.editCitizen = function(id) {
-            const cit = citizens.find(c => c.id === id);
-            if (cit) {
-                document.getElementById('modalTitle').innerText = "Modifier le Dossier";
-                document.getElementById('citizenId').value = cit.id;
-                document.getElementById('firstname').value = cit.firstname;
-                document.getElementById('lastname').value = cit.lastname;
-                document.getElementById('phone').value = cit.phone;
-                document.getElementById('bloodtype').value = cit.bloodtype;
-                document.getElementById('pathologies').value = cit.pathologies;
-                document.getElementById('notes').value = cit.notes;
-                document.getElementById('citizenModal').style.display = 'flex';
-            }
-        };
-
-        // Système de recherche dynamique
-        window.searchCitizen = function() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = citizens.filter(c => 
-                c.firstname.toLowerCase().includes(query) || 
-                c.lastname.toLowerCase().includes(query) ||
-                c.id.toLowerCase().includes(query)
-            );
-            renderCitizens(filtered);
-        };
-    </script>
-
+    <!-- SCRIPT POUR LE FILTRE -->
     <script>
-        function openModal() {
-            document.getElementById('modalTitle').innerText = "Créer un Dossier Médical";
-            document.getElementById('citizenForm').reset();
-            document.getElementById('citizenId').value = '';
-            document.getElementById('citizenModal').style.display = 'flex';
-        }
+        function filterObjects(category) {
+            // Gérer les boutons actifs
+            let buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
 
-        function closeModal() {
-            document.getElementById('citizenModal').style.display = 'none';
+            // Gérer l'affichage des cartes
+            let cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.classList.remove('show');
+                if (category === 'all') {
+                    card.classList.add('show');
+                } else if (card.classList.contains(category)) {
+                    card.classList.add('show');
+                }
+            });
         }
     </script>
+
 </body>
 </html>
