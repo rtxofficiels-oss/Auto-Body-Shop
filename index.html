@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auto Body Shop — Planning & Absences</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --garage-red: #e63946;
+      --garage-orange: #f4a261;
+      --garage-yellow: #f9c74f;
+      --garage-green: #43aa8b;
+      --garage-blue: #4361ee;
+      --garage-gray: #6c757d;
+      --bg-dark: #0d0f14;
+      --bg-card: #161b27;
+      --bg-card2: #1e2536;
+      --border-col: #2a3045;
+      --text-main: #e2e8f0;
+      --text-muted: #8899aa;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--border-col); border-radius: 3px; }
+
+    /* ─── HEADER ─── */
+    .app-header {
+      background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #1a1f30 100%);
+      border-bottom: 2px solid var(--garage-red);
+      padding: 0 1.5rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(230,57,70,0.15);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--garage-red), #c1121f);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #fff;
+      box-shadow: 0 0 15px rgba(230,57,70,0.4);
+    }
+
+    .logo-text h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-text p {
+      font-size: 0.7rem;
+      color: var(--garage-red);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* ─── PRÉSENCE COUNTER ─── */
+    .presence-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .presence-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(67,170,139,0.15);
+      border: 1px solid rgba(67,170,139,0.4);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--garage-green);
+    }
+
+    .presence-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--garage-green);
+      border-radius: 50%;
+      animation: pulse-green 2s infinite;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    /* ─── SIDEBAR ─── */
+    .layout {
+      display: flex;
+      min-height: calc(100vh - 64px);
+    }
+
+    .sidebar {
+      width: 260px;
+      min-width: 260px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border-col);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ─── NAV TABS ─── */
+    .nav-tab {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .nav-tab:hover {
+      background: var(--bg-card2);
+      color: var(--text-main);
+    }
+
+    .nav-tab.active {
+      background: rgba(230,57,70,0.12);
+      border-color: rgba(230,57,70,0.3);
+      color: var(--garage-red);
+    }
+
+    /* ─── EMPLOYEE CARDS IN SIDEBAR ─── */
+    .emp-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .emp-chip:hover { background: var(--bg-card2); }
+
+    .emp-chip.filtered {
+      border-color: var(--emp-color, var(--garage-blue));
+      background: rgba(255,255,255,0.04);
+    }
+
+    .emp-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .emp-info { flex: 1; min-width: 0; }
+    .emp-name { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .emp-role { font-size: 0.7rem; color: var(--text-muted); }
+
+    /* ─── MAIN ─── */
+    .main-content {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+      min-width: 0;
+    }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-col);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+
+    /* ─── BTN ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-red {
+      background: var(--garage-red);
+      color: #fff;
+    }
+    .btn-red:hover { background: #c1121f; box-shadow: 0 0 12px rgba(230,57,70,0.4); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-col);
+    }
+    .btn-ghost:hover { background: var(--bg-card2); color: var(--text-main); }
+
+    .btn-green {
+      background: var(--garage-green);
+      color: #fff;
+    }
+    .btn-green:hover { background: #2d8c71; }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.78rem;
+    }
+
+    /* ─── CALENDAR ─── */
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .cal-nav-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border-col);
+      background: var(--bg-card2);
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .cal-nav-btn:hover { border-color: var(--garage-red); color: var(--garage-red); }
+
+    .cal-title { font-size: 1.1rem; font-weight: 700; }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+    }
+
+    .cal-day-header {
+      text-align: center;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      padding: 6px 0;
+      font-weight: 700;
+    }
+
+    .cal-day {
+      min-height: 80px;
+      background: var(--bg-card2);
+      border: 1px solid var(--border-col);
+      border-radius: 6px;
+      padding: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cal-day:hover { border-color: var(--garage-red); background: rgba(230,57,70,0.05); }
+
+    .cal-day.today {
+      border-color: var(--garage-red);
+      background: rgba(230,57,70,0.08);
+    }
+
+    .cal-day.other-month { opacity: 0.4; }
+
+    .cal-day.weekend-day { background: rgba(108,117,125,0.08); }
+
+    .day-num {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .cal-day.today .day-num {
+      background: var(--garage-red);
+      color: #fff;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    .cal-event {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-bottom: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    /* ─── WEEK VIEW ─── */
+    .week-grid {
+      display: grid;
+      grid-template-columns: 80px repeat(7, 1fr);
+      border: 1px solid var(--border-col);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .week-day-header {
+      background: var(--bg-card2);
+      border-bottom: 1px solid var(--border-col);
+      border-right: 1px solid var(--border-col);
+      padding: 8px;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .week-day-header.today-col { background: rgba(230,57,70,0.15); color: var(--garage-red); }
+
+    .week-row {
+      display: contents;
+    }
+
+    .week-emp-label {
+      border-right: 1px solid var(--border-col);
+      border-bottom: 1px solid var(--border-col);
+      padding: 8px 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-card2);
+    }
+
+    .week-cell {
+      border-right: 1px solid var(--border-col);
+      border-bottom: 1px solid var(--border-col);
+      padding: 4px;
+      min-height: 50px;
+      cursor: pointer;
+      transition: background 0.15s;
+      position: relative;
+    }
+
+    .week-cell:hover { background: rgba(230,57,70,0.04); }
+    .week-cell.today-col { background: rgba(230,57,70,0.04); }
+
+    /* ─── MODAL ─── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-col);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      transform: scale(0.95);
+      transition: transform 0.25s;
+    }
+
+    .modal-overlay.open .modal-box { transform: scale(1); }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-col);
+    }
+
+    .modal-title { font-size: 1rem; font-weight: 700; }
+
+    .modal-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      border: 1px solid var(--border-col);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { background: var(--garage-red); color: #fff; border-color: var(--garage-red); }
+
+    .modal-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .modal-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border-col);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* ─── FORM ELEMENTS ─── */
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .form-input, .form-select, .form-textarea {
+      background: var(--bg-card2);
+      border: 1px solid var(--border-col);
+      border-radius: 8px;
+      color: var(--text-main);
+      padding: 9px 12px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--garage-red);
+      box-shadow: 0 0 0 3px rgba(230,57,70,0.1);
+    }
+
+    .form-select option { background: var(--bg-card2); }
+
+    .form-textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+
+    .color-picker-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .color-swatch.selected { border-color: #fff; transform: scale(1.2); }
+
+    /* ─── LEGEND ─── */
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    /* ─── STATS CARDS ─── */
+    .stat-card {
+      background: var(--bg-card2);
+      border: 1px solid var(--border-col);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ─── NOTEPAD ─── */
+    .notepad-area {
+      background: var(--bg-card2);
+      border: 1px solid var(--border-col);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      min-height: 120px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .notepad-area:focus { border-color: var(--garage-orange); }
+
+    /* ─── EMS GUARD CARDS ─── */
+    .ems-card {
+      background: rgba(249,199,79,0.08);
+      border: 1px solid rgba(249,199,79,0.3);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ems-badge {
+      background: var(--garage-yellow);
+      color: #1a1a1a;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ─── TOAST ─── */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: var(--bg-card);
+      border: 1px solid var(--border-col);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+      min-width: 220px;
+    }
+
+    .toast.success { border-left: 3px solid var(--garage-green); }
+    .toast.error { border-left: 3px solid var(--garage-red); }
+    .toast.info { border-left: 3px solid var(--garage-blue); }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; pointer-events: none; }
+    }
+
+    /* ─── TABS ─── */
+    .view-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-card2);
+      border-radius: 10px;
+      padding: 4px;
+      border: 1px solid var(--border-col);
+    }
+
+    .view-tab {
+      padding: 6px 16px;
+      border-radius: 7px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .view-tab.active {
+      background: var(--garage-red);
+      color: #fff;
+    }
+
+    /* ─── FILTER CHIPS ─── */
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-col);
+      background: var(--bg-card2);
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .filter-chip.active {
+      border-color: rgba(255,255,255,0.3);
+      color: #fff;
+    }
+
+    /* ─── SCROLLABLE SECTION ─── */
+    .section-scroll { overflow-y: auto; max-height: 180px; }
+
+    /* ─── PAGE SECTIONS ─── */
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .cal-day { min-height: 55px; }
+    }
+
+    /* ─── GLOW EFFECT ─── */
+    .glow-red { box-shadow: 0 0 20px rgba(230,57,70,0.2); }
+    .divider { height: 1px; background: var(--border-col); margin: 0.25rem 0; }
+
+    /* ─── LOADING ─── */
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border-col);
+      border-top-color: var(--garage-red);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* event details popup */
+    .event-popup {
+      position: fixed;
+      z-index: 300;
+      background: var(--bg-card);
+      border: 1px solid var(--border-col);
+      border-radius: 10px;
+      padding: 12px 14px;
+      min-width: 200px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      pointer-events: all;
+    }
+
+    .badge-status {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════ HEADER ════════════════════ -->
+<header class="app-header">
+  <div class="logo-area">
+    <div class="logo-icon"><i class="fa fa-wrench"></i></div>
+    <div class="logo-text">
+      <h1>AUTO BODY SHOP</h1>
+      <p>Planning &amp; Absences</p>
+    </div>
+  </div>
+
+  <div class="presence-bar">
+    <div class="presence-badge">
+      <div class="presence-dot"></div>
+      <span id="presenceCount">—</span> disponible(s) aujourd'hui
+    </div>
+    <div id="todayLabel" style="font-size:0.78rem;color:var(--text-muted);"></div>
+  </div>
+
+  <!-- Mobile nav toggle -->
+  <button id="mobileMenuBtn" class="btn btn-ghost btn-sm" style="display:none;">
+    <i class="fa fa-bars"></i>
+  </button>
+</header>
+
+<!-- ════════════════════ LAYOUT ════════════════════ -->
+<div class="layout">
+
+  <!-- ──────── SIDEBAR ──────── -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Navigation -->
+    <div>
+      <p class="sidebar-section-title">Navigation</p>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div class="nav-tab active" data-page="planning" onclick="switchPage('planning', this)">
+          <i class="fa fa-calendar-days" style="width:16px;text-align:center;"></i> Planning
+        </div>
+        <div class="nav-tab" data-page="employees" onclick="switchPage('employees', this)">
+          <i class="fa fa-users" style="width:16px;text-align:center;"></i> Personnel
+        </div>
+        <div class="nav-tab" data-page="ems" onclick="switchPage('ems', this)">
+          <i class="fa fa-truck-medical" style="width:16px;text-align:center;"></i> Garde EMS
+        </div>
+        <div class="nav-tab" data-page="notepad" onclick="switchPage('notepad', this)">
+          <i class="fa fa-note-sticky" style="width:16px;text-align:center;"></i> Bloc-notes
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Filters by type -->
+    <div>
+      <p class="sidebar-section-title">Filtrer par statut</p>
+      <div style="display:flex;flex-direction:column;gap:4px;" id="statusFilters">
+        <div class="emp-chip" onclick="toggleStatusFilter('all', this)" data-status="all" style="--emp-color:#ffffff;">
+          <div class="emp-avatar" style="background:#444;font-size:0.6rem;"><i class="fa fa-globe"></i></div>
+          <div class="emp-info"><div class="emp-name">Tous les statuts</div></div>
+        </div>
+        <div class="emp-chip" onclick="toggleStatusFilter('conges', this)" data-status="conges">
+          <div class="legend-dot" style="background:#43aa8b;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
+          <div class="emp-info"><div class="emp-name">Congés / Vacances</div></div>
+        </div>
+        <div class="emp-chip" onclick="toggleStatusFilter('weekend', this)" data-status="weekend">
+          <div class="legend-dot" style="background:#6c757d;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
+          <div class="emp-info"><div class="emp-name">Week-end</div></div>
+        </div>
+        <div class="emp-chip" onclick="toggleStatusFilter('absence', this)" data-status="absence">
+          <div class="legend-dot" style="background:#e63946;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
+          <div class="emp-info"><div class="emp-name">Absence / Maladie</div></div>
+        </div>
+        <div class="emp-chip" onclick="toggleStatusFilter('ems', this)" data-status="ems">
+          <div class="legend-dot" style="background:#f9c74f;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
+          <div class="emp-info"><div class="emp-name">Garde EMS</div></div>
+        </div>
+        <div class="emp-chip" onclick="toggleStatusFilter('autre', this)" data-status="autre">
+          <div class="legend-dot" style="background:#4361ee;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
+          <div class="emp-info"><div class="emp-name">Autre</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Employees list -->
+    <div style="flex:1;">
+      <p class="sidebar-section-title">Équipe</p>
+      <div id="sidebarEmployees" style="display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto;">
+        <div style="color:var(--text-muted);font-size:0.8rem;">Chargement…</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Firebase status -->
+    <div style="font-size:0.72rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+      <span id="fbStatusDot" style="width:7px;height:7px;border-radius:50%;background:var(--garage-yellow);display:inline-block;"></span>
+      <span id="fbStatusText">Firebase — en attente</span>
+    </div>
+
+  </aside>
+
+  <!-- ──────── MAIN CONTENT ──────── -->
+  <main class="main-content">
+
+    <!-- ════ PAGE: PLANNING ════ -->
+    <section class="page-section active" id="page-planning">
+
+      <!-- Top bar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
+        <div>
+          <h2 style="font-size:1.2rem;font-weight:800;">Planning Mensuel / Hebdomadaire</h2>
+          <p style="font-size:0.8rem;color:var(--text-muted);">Visualisez et gérez les présences, absences et gardes de votre équipe.</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <div class="view-tabs">
+            <button class="view-tab active" id="tabMonth" onclick="switchCalView('month')">
+              <i class="fa fa-calendar"></i> Mois
+            </button>
+            <button class="view-tab" id="tabWeek" onclick="switchCalView('week')">
+              <i class="fa fa-calendar-week"></i> Semaine
+            </button>
+          </div>
+          <button class="btn btn-red" onclick="openEventModal()">
+            <i class="fa fa-plus"></i> Ajouter
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.2rem;" id="statsRow">
+        <div class="stat-card">
+          <div class="stat-num" style="color:var(--garage-green);" id="stat-presents">—</div>
+          <div class="stat-label">Présents</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:var(--garage-red);" id="stat-absents">—</div>
+          <div class="stat-label">Absents</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:var(--garage-yellow);" id="stat-ems">—</div>
+          <div class="stat-label">Garde EMS</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:var(--text-muted);" id="stat-total">—</div>
+          <div class="stat-label">Total équipe</div>
+        </div>
+      </div>
+
+      <!-- Calendar card -->
+      <div class="card glow-red">
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="calNav(-1)"><i class="fa fa-chevron-left"></i></button>
+          <div class="cal-title" id="calTitle">—</div>
+          <button class="cal-nav-btn" onclick="calNav(1)"><i class="fa fa-chevron-right"></i></button>
+        </div>
+        <div id="calendarContainer"></div>
+      </div>
+
+      <!-- Legend -->
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:1rem;">
+        <div class="legend-item"><div class="legend-dot" style="background:#43aa8b;"></div> Congés / Vacances</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#6c757d;"></div> Week-end</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e63946;"></div> Absence / Maladie</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f9c74f;"></div> Garde EMS</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4361ee;"></div> Autre</div>
+      </div>
+    </section>
+
+    <!-- ════ PAGE: PERSONNEL ════ -->
+    <section class="page-section" id="page-employees">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;">
+        <div>
+          <h2 style="font-size:1.2rem;font-weight:800;">Gestion du Personnel</h2>
+          <p style="font-size:0.8rem;color:var(--text-muted);">Créez, modifiez ou supprimez les membres de votre équipe.</p>
+        </div>
+        <button class="btn btn-red" onclick="openEmployeeModal()">
+          <i class="fa fa-user-plus"></i> Ajouter
+        </button>
+      </div>
+
+      <div id="employeeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+        <div class="card" style="text-align:center;color:var(--text-muted);">
+          <span class="spinner"></span> Chargement…
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ PAGE: GARDE EMS ════ -->
+    <section class="page-section" id="page-ems">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;">
+        <div>
+          <h2 style="font-size:1.2rem;font-weight:800;">Planning Garde EMS</h2>
+          <p style="font-size:0.8rem;color:var(--text-muted);">Dépannages prioritaires assignés aux mécaniciens de garde.</p>
+        </div>
+        <button class="btn btn-red" onclick="openEventModal(null, 'ems')">
+          <i class="fa fa-plus"></i> Assigner garde
+        </button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;">
+        <div class="card" style="border-color:rgba(249,199,79,0.3);">
+          <div class="card-title" style="color:var(--garage-yellow);"><i class="fa fa-star"></i> Mécaniciens en garde cette semaine</div>
+          <div id="emsWeekList" style="display:flex;flex-direction:column;gap:8px;">
+            <div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde planifiée.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fa fa-clock-rotate-left"></i> Prochaines gardes</div>
+          <div id="emsUpcomingList" style="display:flex;flex-direction:column;gap:8px;">
+            <div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde à venir.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="fa fa-list"></i> Toutes les gardes EMS</div>
+        <div id="emsAllList" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;">
+          <div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde enregistrée.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ PAGE: BLOC-NOTES ════ -->
+    <section class="page-section" id="page-notepad">
+      <div style="margin-bottom:1.2rem;">
+        <h2 style="font-size:1.2rem;font-weight:800;">Bloc-notes d'Atelier</h2>
+        <p style="font-size:0.8rem;color:var(--text-muted);">Consignes quotidiennes synchronisées en temps réel avec l'équipe.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:1rem;" id="notepadLayout">
+        <div class="card">
+          <div class="card-title"><i class="fa fa-pen-to-square"></i> Note du jour
+            <span id="notepadSaveStatus" style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:auto;"></span>
+          </div>
+          <textarea id="notepadMain" class="notepad-area" placeholder="Ex: Livraison pièces BMW à 14h, Contrôle technique samedi matin, Réunion chef d'atelier lundi…"></textarea>
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;">
+            <button class="btn btn-ghost btn-sm" onclick="clearNotepad()"><i class="fa fa-trash"></i> Effacer</button>
+            <button class="btn btn-red btn-sm" onclick="saveNotepad()"><i class="fa fa-floppy-disk"></i> Sauvegarder</button>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div class="card">
+            <div class="card-title" style="font-size:0.9rem;"><i class="fa fa-clock"></i> Notes précédentes</div>
+            <div id="notepadHistory" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;">
+              <div style="color:var(--text-muted);font-size:0.78rem;">Aucune note précédente.</div>
+            </div>
+          </div>
+
+          <div class="card" style="border-color:rgba(230,57,70,0.3);">
+            <div class="card-title" style="font-size:0.9rem;color:var(--garage-red);"><i class="fa fa-triangle-exclamation"></i> Consignes prioritaires</div>
+            <textarea id="notepadPriority" class="notepad-area" placeholder="Consignes urgentes chef d'équipe…" style="min-height:80px;border-color:rgba(230,57,70,0.3);"></textarea>
+            <button class="btn btn-red btn-sm" style="margin-top:8px;align-self:flex-end;" onclick="savePriorityNote()">
+              <i class="fa fa-floppy-disk"></i> Sauvegarder
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ════════════════════ MODALS ════════════════════ -->
+
+<!-- MODAL: Événement / Absence -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="eventModalTitle"><i class="fa fa-calendar-plus"></i> Nouvel événement</div>
+      <button class="modal-close" onclick="closeModal('eventModal')"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Membre du personnel</label>
+        <select class="form-select" id="evtEmployee">
+          <option value="">— Sélectionner —</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label class="form-label">Date de début</label>
+          <input type="date" class="form-input" id="evtStart" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date de fin</label>
+          <input type="date" class="form-input" id="evtEnd" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Type / Statut</label>
+        <select class="form-select" id="evtType">
+          <option value="conges">🌴 Congés / Vacances</option>
+          <option value="weekend">🔘 Week-end</option>
+          <option value="absence">🔴 Absence / Maladie</option>
+          <option value="ems">⭐ Garde EMS / Dépannage</option>
+          <option value="autre">🔵 Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Note / Commentaire</label>
+        <textarea class="form-textarea" id="evtNote" placeholder="Motif, détails…"></textarea>
+      </div>
+      <input type="hidden" id="evtId" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="evtDeleteBtn" style="display:none;margin-right:auto;" onclick="deleteCurrentEvent()">
+        <i class="fa fa-trash"></i> Supprimer
+      </button>
+      <button class="btn btn-ghost" onclick="closeModal('eventModal')">Annuler</button>
+      <button class="btn btn-red" onclick="saveEvent()"><i class="fa fa-floppy-disk"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Employé -->
+<div class="modal-overlay" id="employeeModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="empModalTitle"><i class="fa fa-user-plus"></i> Nouvel employé</div>
+      <button class="modal-close" onclick="closeModal('employeeModal')"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label class="form-label">Prénom</label>
+          <input type="text" class="form-input" id="empFirstName" placeholder="Jean" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nom</label>
+          <input type="text" class="form-input" id="empLastName" placeholder="Dupont" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Rôle</label>
+        <select class="form-select" id="empRole">
+          <option value="Mécanicien">🔧 Mécanicien</option>
+          <option value="Carrossier">🚗 Carrossier</option>
+          <option value="Chef d'atelier">👷 Chef d'atelier</option>
+          <option value="Dépannage EMS">🚨 Dépannage EMS</option>
+          <option value="Peintre">🎨 Peintre</option>
+          <option value="Électricien auto">⚡ Électricien auto</option>
+          <option value="Réceptionniste">📋 Réceptionniste</option>
+          <option value="Autre">👤 Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Couleur de l'employé</label>
+        <div class="color-picker-row" id="colorPicker">
+          <!-- Colors generated by JS -->
+        </div>
+      </div>
+      <input type="hidden" id="empId" />
+      <input type="hidden" id="empColor" value="#4361ee" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="empDeleteBtn" style="display:none;margin-right:auto;" onclick="deleteCurrentEmployee()">
+        <i class="fa fa-trash"></i> Supprimer
+      </button>
+      <button class="btn btn-ghost" onclick="closeModal('employeeModal')">Annuler</button>
+      <button class="btn btn-red" onclick="saveEmployee()"><i class="fa fa-floppy-disk"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ════════════════════ SCRIPTS ════════════════════ -->
+<script type="module">
+  // ╔══════════════════════════════════════════════╗
+  // ║         FIREBASE CONFIGURATION               ║
+  // ║  !! Remplacez par votre propre config !!     ║
+  // ╚══════════════════════════════════════════════╝
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, updateDoc, deleteDoc,
+    doc, onSnapshot, query, orderBy, setDoc, getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "VOTRE_API_KEY",
+    authDomain: "VOTRE_PROJECT.firebaseapp.com",
+    projectId: "VOTRE_PROJECT_ID",
+    storageBucket: "VOTRE_PROJECT.appspot.com",
+    messagingSenderId: "VOTRE_SENDER_ID",
+    appId: "VOTRE_APP_ID"
+  };
+
+  // ─── Init Firebase ───
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  // ─── Collections ───
+  const COL_EMPLOYEES = "employees";
+  const COL_EVENTS    = "events";
+  const DOC_NOTEPAD   = "notepad/main";
+  const DOC_PRIORITY  = "notepad/priority";
+
+  // ─── App State ───
+  window._state = {
+    employees: [],
+    events: [],
+    calView: "month",         // "month" | "week"
+    currentDate: new Date(),
+    filterEmployee: null,
+    filterStatus: "all",
+    editingEventId: null,
+    editingEmpId: null,
+    selectedColor: "#4361ee",
+    firebaseOk: false
+  };
+
+  const S = window._state;
+
+  // ─── Employee Colors Palette ───
+  const COLOR_PALETTE = [
+    "#e63946","#f4a261","#f9c74f","#43aa8b","#4361ee",
+    "#7209b7","#3a86ff","#06d6a0","#fb5607","#8338ec",
+    "#ff006e","#00b4d8","#52b788","#e9c46a","#e76f51"
+  ];
+
+  // ─── Status Colors ───
+  const STATUS_COLORS = {
+    conges:  "#43aa8b",
+    weekend: "#6c757d",
+    absence: "#e63946",
+    ems:     "#f9c74f",
+    autre:   "#4361ee"
+  };
+
+  const STATUS_LABELS = {
+    conges:  "Congés / Vacances",
+    weekend: "Week-end",
+    absence: "Absence / Maladie",
+    ems:     "Garde EMS",
+    autre:   "Autre"
+  };
+
+  // ══════════════════════════════════════════════
+  //  FIREBASE LISTENERS
+  // ══════════════════════════════════════════════
+
+  function initFirebaseListeners() {
+    // Employees
+    const qEmp = query(collection(db, COL_EMPLOYEES), orderBy("lastName"));
+    onSnapshot(qEmp, (snap) => {
+      S.employees = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderSidebarEmployees();
+      renderEmployeeGrid();
+      renderEmployeeSelects();
+      refreshAllStats();
+      renderCalendar();
+      setFirebaseStatus(true);
+    }, (err) => {
+      console.error("Firebase employees error:", err);
+      setFirebaseStatus(false);
+      showToast("Erreur Firebase : " + err.message, "error");
+    });
+
+    // Events
+    const qEvt = query(collection(db, COL_EVENTS), orderBy("startDate"));
+    onSnapshot(qEvt, (snap) => {
+      S.events = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderCalendar();
+      renderEmsPage();
+      refreshAllStats();
+    }, (err) => {
+      console.error("Firebase events error:", err);
+    });
+
+    // Notepad
+    loadNotepad();
+  }
+
+  async function loadNotepad() {
+    try {
+      const docMain = await getDoc(doc(db, "notepad", "main"));
+      if (docMain.exists()) document.getElementById("notepadMain").value = docMain.data().content || "";
+
+      const docPrio = await getDoc(doc(db, "notepad", "priority"));
+      if (docPrio.exists()) document.getElementById("notepadPriority").value = docPrio.data().content || "";
+
+      // History listener
+      onSnapshot(collection(db, "notepad"), (snap) => {
+        renderNotepadHistory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      });
+    } catch(e) {
+      console.warn("Notepad load error:", e);
+    }
+  }
+
+  function setFirebaseStatus(ok) {
+    S.firebaseOk = ok;
+    const dot  = document.getElementById("fbStatusDot");
+    const text = document.getElementById("fbStatusText");
+    dot.style.background  = ok ? "var(--garage-green)" : "var(--garage-red)";
+    text.textContent = ok ? "Firebase — Connecté ✓" : "Firebase — Erreur ✗";
+  }
+
+  // ══════════════════════════════════════════════
+  //  EMPLOYEES CRUD
+  // ══════════════════════════════════════════════
+
+  window.openEmployeeModal = function(emp = null) {
+    S.editingEmpId = emp ? emp.id : null;
+    document.getElementById("empId").value        = emp ? emp.id        : "";
+    document.getElementById("empFirstName").value = emp ? emp.firstName : "";
+    document.getElementById("empLastName").value  = emp ? emp.lastName  : "";
+    document.getElementById("empRole").value      = emp ? emp.role      : "Mécanicien";
+    S.selectedColor = emp ? emp.color : COLOR_PALETTE[0];
+    document.getElementById("empColor").value = S.selectedColor;
+    document.getElementById("empModalTitle").innerHTML =
+      emp ? '<i class="fa fa-pen"></i> Modifier l\'employé' : '<i class="fa fa-user-plus"></i> Nouvel employé';
+    document.getElementById("empDeleteBtn").style.display = emp ? "inline-flex" : "none";
+    buildColorPicker();
+    openModal("employeeModal");
+  };
+
+  window.saveEmployee = async function() {
+    const firstName = document.getElementById("empFirstName").value.trim();
+    const lastName  = document.getElementById("empLastName").value.trim();
+    const role      = document.getElementById("empRole").value;
+    const color     = S.selectedColor;
+
+    if (!firstName || !lastName) { showToast("Nom et prénom requis.", "error"); return; }
+
+    const data = { firstName, lastName, role, color, initials: (firstName[0]+lastName[0]).toUpperCase() };
+
+    try {
+      if (S.editingEmpId) {
+        await updateDoc(doc(db, COL_EMPLOYEES, S.editingEmpId), data);
+        showToast("Employé mis à jour ✓", "success");
+      } else {
+        await addDoc(collection(db, COL_EMPLOYEES), data);
+        showToast("Employé ajouté ✓", "success");
+      }
+      closeModal("employeeModal");
+    } catch(e) {
+      showToast("Erreur : " + e.message, "error");
+    }
+  };
+
+  window.deleteCurrentEmployee = async function() {
+    if (!S.editingEmpId) return;
+    if (!confirm("Supprimer cet employé ? Ses événements ne seront pas supprimés.")) return;
+    try {
+      await deleteDoc(doc(db, COL_EMPLOYEES, S.editingEmpId));
+      showToast("Employé supprimé.", "info");
+      closeModal("employeeModal");
+    } catch(e) {
+      showToast("Erreur : " + e.message, "error");
+    }
+  };
+
+  // ══════════════════════════════════════════════
+  //  EVENTS CRUD
+  // ══════════════════════════════════════════════
+
+  window.openEventModal = function(dateStr = null, forceType = null, eventId = null) {
+    const existing = eventId ? S.events.find(e => e.id === eventId) : null;
+    S.editingEventId = existing ? existing.id : null;
+
+    document.getElementById("evtId").value     = existing ? existing.id        : "";
+    document.getElementById("evtEmployee").value = existing ? existing.employeeId : "";
+    document.getElementById("evtStart").value  = existing ? existing.startDate : (dateStr || today());
+    document.getElementById("evtEnd").value    = existing ? existing.endDate   : (dateStr || today());
+    document.getElementById("evtType").value   = existing ? existing.type      : (forceType || "conges");
+    document.getElementById("evtNote").value   = existing ? existing.note      : "";
+    document.getElementById("eventModalTitle").innerHTML =
+      existing ? '<i class="fa fa-pen"></i> Modifier l\'événement' : '<i class="fa fa-calendar-plus"></i> Nouvel événement';
+    document.getElementById("evtDeleteBtn").style.display = existing ? "inline-flex" : "none";
+    openModal("eventModal");
+  };
+
+  window.saveEvent = async function() {
+    const employeeId = document.getElementById("evtEmployee").value;
+    const startDate  = document.getElementById("evtStart").value;
+    const endDate    = document.getElementById("evtEnd").value;
+    const type       = document.getElementById("evtType").value;
+    const note       = document.getElementById("evtNote").value.trim();
+
+    if (!employeeId) { showToast("Sélectionnez un membre.", "error"); return; }
+    if (!startDate || !endDate) { showToast("Dates requises.", "error"); return; }
+    if (endDate < startDate) { showToast("La date de fin doit être ≥ début.", "error"); return; }
+
+    const emp = S.employees.find(e => e.id === employeeId);
+    const data = {
+      employeeId,
+      employeeName: emp ? `${emp.firstName} ${emp.lastName}` : "—",
+      employeeColor: emp ? emp.color : "#4361ee",
+      startDate, endDate, type, note,
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      if (S.editingEventId) {
+        await updateDoc(doc(db, COL_EVENTS, S.editingEventId), data);
+        showToast("Événement mis à jour ✓", "success");
+      } else {
+        await addDoc(collection(db, COL_EVENTS), data);
+        showToast("Événement enregistré ✓", "success");
+      }
+      closeModal("eventModal");
+    } catch(e) {
+      showToast("Erreur : " + e.message, "error");
+    }
+  };
+
+  window.deleteCurrentEvent = async function() {
+    if (!S.editingEventId) return;
+    if (!confirm("Supprimer cet événement ?")) return;
+    try {
+      await deleteDoc(doc(db, COL_EVENTS, S.editingEventId));
+      showToast("Événement supprimé.", "info");
+      closeModal("eventModal");
+    } catch(e) {
+      showToast("Erreur : " + e.message, "error");
+    }
+  };
+
+  // ══════════════════════════════════════════════
+  //  NOTEPAD
+  // ══════════════════════════════════════════════
+
+  window.saveNotepad = async function() {
+    const content = document.getElementById("notepadMain").value;
+    try {
+      await setDoc(doc(db, "notepad", "main"), {
+        content, date: today(), updatedAt: new Date().toISOString()
+      });
+      document.getElementById("notepadSaveStatus").textContent = "Sauvegardé ✓";
+      setTimeout(() => document.getElementById("notepadSaveStatus").textContent = "", 2000);
+      showToast("Bloc-notes sauvegardé ✓", "success");
+    } catch(e) { showToast("Erreur : " + e.message, "error"); }
+  };
+
+  window.savePriorityNote = async function() {
+    const content = document.getElementById("notepadPriority").value;
+    try {
+      await setDoc(doc(db, "notepad", "priority"), {
+        content, date: today(), updatedAt: new Date().toISOString()
+      });
+      showToast("Consigne prioritaire sauvegardée ✓", "success");
+    } catch(e) { showToast("Erreur : " + e.message, "error"); }
+  };
+
+  window.clearNotepad = function() {
+    if (!confirm("Effacer le contenu ?")) return;
+    document.getElementById("notepadMain").value = "";
+  };
+
+  function renderNotepadHistory(docs) {
+    const el = document.getElementById("notepadHistory");
+    const notes = docs.filter(d => d.id !== "main" && d.id !== "priority" && d.content);
+    if (!notes.length) {
+      el.innerHTML = '<div style="color:var(--text-muted);font-size:0.78rem;">Aucun historique.</div>';
+      return;
+    }
+    el.innerHTML = notes.map(n => `
+      <div style="background:var(--bg-card2);border-radius:6px;padding:8px 10px;font-size:0.78rem;border:1px solid var(--border-col);">
+        <div style="color:var(--text-muted);margin-bottom:2px;">${n.date || '—'}</div>
+        <div style="color:var(--text-main);">${(n.content||'').substring(0,80)}…</div>
+      </div>
+    `).join("");
+  }
+
+  // ══════════════════════════════════════════════
+  //  CALENDAR RENDERING
+  // ══════════════════════════════════════════════
+
+  window.switchCalView = function(view) {
+    S.calView = view;
+    document.getElementById("tabMonth").classList.toggle("active", view === "month");
+    document.getElementById("tabWeek").classList.toggle("active",  view === "week");
+    renderCalendar();
+  };
+
+  window.calNav = function(dir) {
+    if (S.calView === "month") {
+      S.currentDate = new Date(S.currentDate.getFullYear(), S.currentDate.getMonth() + dir, 1);
+    } else {
+      S.currentDate = new Date(S.currentDate.getTime() + dir * 7 * 86400000);
+    }
+    renderCalendar();
+  };
+
+  function renderCalendar() {
+    if (S.calView === "month") renderMonthView();
+    else renderWeekView();
+  }
+
+  function getFilteredEvents() {
+    return S.events.filter(e => {
+      if (S.filterEmployee && e.employeeId !== S.filterEmployee) return false;
+      if (S.filterStatus !== "all" && e.type !== S.filterStatus) return false;
+      return true;
+    });
+  }
+
+  function renderMonthView() {
+    const y = S.currentDate.getFullYear();
+    const m = S.currentDate.getMonth();
+    const monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+    document.getElementById("calTitle").textContent = `${monthNames[m]} ${y}`;
+
+    const firstDay = new Date(y, m, 1).getDay();
+    const daysInMonth = new Date(y, m+1, 0).getDate();
+    const offset = (firstDay + 6) % 7; // Start Monday
+
+    const dayHeaders = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+    const todayStr = today();
+    const events = getFilteredEvents();
+
+    let html = '<div class="cal-grid">';
+    dayHeaders.forEach(d => html += `<div class="cal-day-header">${d}</div>`);
+
+    // Prev month padding
+    const prevDays = new Date(y, m, 0).getDate();
+    for (let i = offset - 1; i >= 0; i--) {
+      const d = prevDays - i;
+      html += `<div class="cal-day other-month"><div class="day-num">${d}</div></div>`;
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dow = new Date(y, m, d).getDay(); // 0=Sun,6=Sat
+      const isWeekend = dow === 0 || dow === 6;
+      const isToday   = dateStr === todayStr;
+
+      const dayEvents = events.filter(e => e.startDate <= dateStr && e.endDate >= dateStr);
+
+      let cls = "cal-day";
+      if (isToday) cls += " today";
+      if (isWeekend) cls += " weekend-day";
+
+      html += `<div class="${cls}" onclick="handleDayClick('${dateStr}', event)">
+        <div class="day-num">${d}</div>`;
+
+      dayEvents.slice(0, 3).forEach(ev => {
+        const color = STATUS_COLORS[ev.type] || "#4361ee";
+        html += `<div class="cal-event" style="background:${color};"
+          onclick="handleEventClick('${ev.id}',event)"
+          title="${ev.employeeName} — ${STATUS_LABELS[ev.type]||ev.type}"
+        >${ev.employeeName}</div>`;
+      });
+
+      if (dayEvents.length > 3) {
+        html += `<div style="font-size:0.6rem;color:var(--text-muted);padding:1px 4px;">+${dayEvents.length-3} autres</div>`;
+      }
+
+      html += `</div>`;
+    }
+
+    // Next month padding
+    const totalCells = offset + daysInMonth;
+    const remaining  = (7 - (totalCells % 7)) % 7;
+    for (let d = 1; d <= remaining; d++) {
+      html += `<div class="cal-day other-month"><div class="day-num">${d}</div></div>`;
+    }
+
+    html += '</div>';
+    document.getElementById("calendarContainer").innerHTML = html;
+  }
+
+  function renderWeekView() {
+    // Find Monday of current week
+    const curr = new Date(S.currentDate);
+    const dow  = curr.getDay();
+    const diff = (dow === 0 ? -6 : 1 - dow);
+    const monday = new Date(curr);
+    monday.setDate(curr.getDate() + diff);
+
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      days.push(d);
+    }
+
+    const dayShorts = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+    const todayStr  = today();
+    const events    = getFilteredEvents();
+
+    const weekLabel = `Semaine du ${days[0].getDate()}/${days[0].getMonth()+1} au ${days[6].getDate()}/${days[6].getMonth()+1}/${days[6].getFullYear()}`;
+    document.getElementById("calTitle").textContent = weekLabel;
+
+    let html = '<div class="week-grid">';
+    // Corner
+    html += `<div class="week-day-header" style="font-size:0.7rem;color:var(--text-muted);">Employé</div>`;
+    days.forEach((d, i) => {
+      const ds = dateToStr(d);
+      const isToday = ds === todayStr;
+      html += `<div class="week-day-header ${isToday ? 'today-col' : ''}">
+        ${dayShorts[i]} ${d.getDate()}/${d.getMonth()+1}
+      </div>`;
+    });
+
+    // Rows per employee
+    const empsToShow = S.filterEmployee
+      ? S.employees.filter(e => e.id === S.filterEmployee)
+      : S.employees;
+
+    if (!empsToShow.length) {
+      html += `<div style="grid-column:1/-1;padding:1.5rem;text-align:center;color:var(--text-muted);">Aucun employé.</div>`;
+    }
+
+    empsToShow.forEach(emp => {
+      html += `<div class="week-emp-label">
+        <div class="emp-avatar" style="background:${emp.color};width:22px;height:22px;font-size:0.6rem;">${emp.initials}</div>
+        <div style="font-size:0.75rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${emp.firstName}</div>
+      </div>`;
+
+      days.forEach(d => {
+        const ds = dateToStr(d);
+        const isToday = ds === todayStr;
+        const dayEvents = events.filter(e =>
+          e.employeeId === emp.id && e.startDate <= ds && e.endDate >= ds
+        );
+
+        html += `<div class="week-cell ${isToday ? 'today-col' : ''}" onclick="openEventModal('${ds}')">`;
+        dayEvents.forEach(ev => {
+          const color = STATUS_COLORS[ev.type] || "#4361ee";
+          html += `<div class="cal-event" style="background:${color};"
+            onclick="handleEventClick('${ev.id}',event)"
+            title="${STATUS_LABELS[ev.type]||ev.type}"
+          >${STATUS_LABELS[ev.type]||ev.type}</div>`;
+        });
+        html += `</div>`;
+      });
+    });
+
+    html += '</div>';
+    document.getElementById("calendarContainer").innerHTML = html;
+  }
+
+  window.handleDayClick = function(dateStr, e) {
+    if (e.target.closest('.cal-event')) return;
+    openEventModal(dateStr);
+  };
+
+  window.handleEventClick = function(eventId, e) {
+    e.stopPropagation();
+    openEventModal(null, null, eventId);
+  };
+
+  // ══════════════════════════════════════════════
+  //  STATS & PRESENCE
+  // ══════════════════════════════════════════════
+
+  function refreshAllStats() {
+    const todayStr = today();
+    const total    = S.employees.length;
+    const todayEvts = S.events.filter(e => e.startDate <= todayStr && e.endDate >= todayStr);
+
+    const absentIds = new Set(todayEvts.filter(e => ["absence","conges","weekend"].includes(e.type)).map(e => e.employeeId));
+    const emsIds    = new Set(todayEvts.filter(e => e.type === "ems").map(e => e.employeeId));
+    const absents   = absentIds.size;
+    const emsCount  = emsIds.size;
+    const presents  = Math.max(0, total - absents);
+
+    document.getElementById("presenceCount").textContent = presents;
+    document.getElementById("stat-presents").textContent = presents;
+    document.getElementById("stat-absents").textContent  = absents;
+    document.getElementById("stat-ems").textContent      = emsCount;
+    document.getElementById("stat-total").textContent    = total;
+  }
+
+  // ══════════════════════════════════════════════
+  //  SIDEBAR EMPLOYEES
+  // ══════════════════════════════════════════════
+
+  function renderSidebarEmployees() {
+    const el = document.getElementById("sidebarEmployees");
+    if (!S.employees.length) {
+      el.innerHTML = '<div style="color:var(--text-muted);font-size:0.8rem;">Aucun employé.</div>';
+      return;
+    }
+    el.innerHTML = S.employees.map(emp => `
+      <div class="emp-chip ${S.filterEmployee === emp.id ? 'filtered' : ''}"
+           style="--emp-color:${emp.color};"
+           onclick="toggleEmployeeFilter('${emp.id}', this)">
+        <div class="emp-avatar" style="background:${emp.color};">${emp.initials}</div>
+        <div class="emp-info">
+          <div class="emp-name">${emp.firstName} ${emp.lastName}</div>
+          <div class="emp-role">${emp.role}</div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  window.toggleEmployeeFilter = function(id, el) {
+    S.filterEmployee = S.filterEmployee === id ? null : id;
+    document.querySelectorAll("#sidebarEmployees .emp-chip").forEach(c => c.classList.remove("filtered"));
+    if (S.filterEmployee) el.classList.add("filtered");
+    renderCalendar();
+    refreshAllStats();
+  };
+
+  window.toggleStatusFilter = function(status, el) {
+    S.filterStatus = status;
+    document.querySelectorAll("#statusFilters .emp-chip").forEach(c => c.classList.remove("filtered"));
+    el.classList.add("filtered");
+    renderCalendar();
+  };
+
+  // ══════════════════════════════════════════════
+  //  EMPLOYEE GRID (Personnel page)
+  // ══════════════════════════════════════════════
+
+  function renderEmployeeGrid() {
+    const el = document.getElementById("employeeGrid");
+    if (!S.employees.length) {
+      el.innerHTML = `<div class="card" style="text-align:center;color:var(--text-muted);grid-column:1/-1;">
+        <i class="fa fa-users" style="font-size:2rem;margin-bottom:8px;display:block;"></i>
+        Aucun employé enregistré. Cliquez sur "Ajouter" pour commencer.
+      </div>`;
+      return;
+    }
+
+    el.innerHTML = S.employees.map(emp => {
+      const todayStr = today();
+      const empEvents = S.events.filter(e => e.employeeId === emp.id && e.startDate <= todayStr && e.endDate >= todayStr);
+      const statusEv = empEvents[0];
+      const statusColor  = statusEv ? STATUS_COLORS[statusEv.type] : "var(--garage-green)";
+      const statusLabel  = statusEv ? STATUS_LABELS[statusEv.type] : "Présent";
+
+      return `
+      <div class="card" style="border-top:3px solid ${emp.color};">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div class="emp-avatar" style="background:${emp.color};width:46px;height:46px;font-size:1rem;border-radius:12px;">
+            ${emp.initials}
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:0.95rem;font-weight:700;">${emp.firstName} ${emp.lastName}</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);">${emp.role}</div>
+          </div>
+          <div>
+            <span class="badge-status" style="background:${statusColor}22;color:${statusColor};border:1px solid ${statusColor}55;">
+              ${statusLabel}
+            </span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:0.75rem;color:var(--text-muted);">
+            <i class="fa fa-calendar-check"></i>
+            ${S.events.filter(e => e.employeeId === emp.id).length} événement(s)
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="openEmployeeModal(${JSON.stringify(emp).replace(/"/g,'&quot;')})">
+            <i class="fa fa-pen"></i> Modifier
+          </button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  function renderEmployeeSelects() {
+    const sel = document.getElementById("evtEmployee");
+    const current = sel.value;
+    sel.innerHTML = '<option value="">— Sélectionner —</option>' +
+      S.employees.map(e => `<option value="${e.id}">${e.firstName} ${e.lastName} — ${e.role}</option>`).join("");
+    if (current) sel.value = current;
+  }
+
+  // ══════════════════════════════════════════════
+  //  EMS PAGE
+  // ══════════════════════════════════════════════
+
+  function renderEmsPage() {
+    const todayStr = today();
+    const weekStart = getWeekStart(new Date());
+    const weekEnd   = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6);
+    const weekEndStr = dateToStr(weekEnd);
+    const weekStartStr = dateToStr(weekStart);
+
+    const allEms = S.events.filter(e => e.type === "ems");
+    const weekEms = allEms.filter(e => e.startDate <= weekEndStr && e.endDate >= weekStartStr);
+    const upcomingEms = allEms.filter(e => e.startDate > todayStr).slice(0,5);
+
+    const renderEmsCard = (ev) => {
+      const emp = S.employees.find(e => e.id === ev.employeeId);
+      const color = emp ? emp.color : "#f9c74f";
+      return `
+      <div class="ems-card">
+        <div class="emp-avatar" style="background:${color};width:34px;height:34px;">${emp ? emp.initials : '??'}</div>
+        <div style="flex:1;">
+          <div style="font-size:0.85rem;font-weight:700;">${ev.employeeName}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">${ev.startDate} → ${ev.endDate}</div>
+          ${ev.note ? `<div style="font-size:0.75rem;color:var(--garage-yellow);margin-top:2px;">${ev.note}</div>` : ''}
+        </div>
+        <span class="ems-badge">EMS</span>
+        <button class="btn btn-ghost btn-sm" onclick="handleEventClick('${ev.id}',event)">
+          <i class="fa fa-pen"></i>
+        </button>
+      </div>`;
+    };
+
+    document.getElementById("emsWeekList").innerHTML = weekEms.length
+      ? weekEms.map(renderEmsCard).join("") : '<div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde cette semaine.</div>';
+
+    document.getElementById("emsUpcomingList").innerHTML = upcomingEms.length
+      ? upcomingEms.map(renderEmsCard).join("") : '<div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde à venir.</div>';
+
+    document.getElementById("emsAllList").innerHTML = allEms.length
+      ? allEms.map(renderEmsCard).join("") : '<div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde enregistrée.</div>';
+  }
+
+  // ══════════════════════════════════════════════
+  //  COLOR PICKER
+  // ══════════════════════════════════════════════
+
+  function buildColorPicker() {
+    const el = document.getElementById("colorPicker");
+    el.innerHTML = COLOR_PALETTE.map(c => `
+      <div class="color-swatch ${S.selectedColor === c ? 'selected' : ''}"
+           style="background:${c};"
+           onclick="selectColor('${c}', this)"></div>
+    `).join("") + `
+    <input type="color" value="${S.selectedColor}" style="width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius:50%;"
+      oninput="selectColor(this.value, this)" />`;
+  }
+
+  window.selectColor = function(color, el) {
+    S.selectedColor = color;
+    document.getElementById("empColor").value = color;
+    document.querySelectorAll(".color-swatch").forEach(s => s.classList.remove("selected"));
+    if (el.classList) el.classList.add("selected");
+  };
+
+  // ══════════════════════════════════════════════
+  //  NAVIGATION
+  // ══════════════════════════════════════════════
+
+  window.switchPage = function(page, el) {
+    document.querySelectorAll(".page-section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+    document.getElementById(`page-${page}`).classList.add("active");
+    el.classList.add("active");
+
+    if (page === "ems") renderEmsPage();
+  };
+
+  // ══════════════════════════════════════════════
+  //  MODAL HELPERS
+  // ══════════════════════════════════════════════
+
+  window.openModal = function(id) {
+    document.getElementById(id).classList.add("open");
+  };
+  window.closeModal = function(id) {
+    document.getElementById(id).classList.remove("open");
+  };
+
+  // Close on overlay click
+  document.querySelectorAll(".modal-overlay").forEach(overlay => {
+    overlay.addEventListener("click", e => {
+      if (e.target === overlay) overlay.classList.remove("open");
+    });
+  });
+
+  // ══════════════════════════════════════════════
+  //  TOAST NOTIFICATIONS
+  // ══════════════════════════════════════════════
+
+  window.showToast = function(msg, type = "info") {
+    const icons = { success: "fa-circle-check", error: "fa-circle-xmark", info: "fa-circle-info" };
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fa ${icons[type]||'fa-info'}"></i> ${msg}`;
+    document.getElementById("toastContainer").appendChild(toast);
+    setTimeout(() => toast.remove(), 3100);
+  };
+
+  // ══════════════════════════════════════════════
+  //  UTILS
+  // ══════════════════════════════════════════════
+
+  function today() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function dateToStr(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function getWeekStart(d) {
+    const day  = d.getDay();
+    const diff = (day === 0 ? -6 : 1 - day);
+    const mon  = new Date(d);
+    mon.setDate(d.getDate() + diff);
+    return mon;
+  }
+
+  // ══════════════════════════════════════════════
+  //  INIT
+  // ══════════════════════════════════════════════
+
+  function init() {
+    // Today label
+    const d = new Date();
+    const days  = ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
+    const months = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+    document.getElementById("todayLabel").textContent =
+      `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+    renderCalendar();
+    initFirebaseListeners();
+  }
+
+  init();
+</script>
+
+</body>
+</html>
