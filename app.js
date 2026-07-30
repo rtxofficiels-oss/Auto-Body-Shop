@@ -14,6 +14,7 @@
 // 1. IMPORTS FIREBASE SDK v10
 // ─────────────────────────────────────────────────────────────
 import { initializeApp }            from "firebase/app";
+import { getAnalytics }             from "firebase/analytics";
 import {
   getFirestore,
   collection,
@@ -35,20 +36,23 @@ import {
 //    Disponible dans : Firebase Console > Paramètres du projet
 // ─────────────────────────────────────────────────────────────
 export const firebaseConfig = {
-  apiKey:            "VOTRE_API_KEY",
-  authDomain:        "VOTRE_PROJECT.firebaseapp.com",
-  projectId:         "VOTRE_PROJECT_ID",
-  storageBucket:     "VOTRE_PROJECT.appspot.com",
-  messagingSenderId: "VOTRE_SENDER_ID",
-  appId:             "VOTRE_APP_ID"
+  apiKey:            "AIzaSyBR2VZtENM-AojtNalKBvpsZzdVRWOg7M8",
+  authDomain:        "auto-body-shop-d2252.firebaseapp.com",
+  databaseURL:       "https://auto-body-shop-d2252-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:         "auto-body-shop-d2252",
+  storageBucket:     "auto-body-shop-d2252.firebasestorage.app",
+  messagingSenderId: "45691832034",
+  appId:             "1:45691832034:web:09efc5e25d319c365f80bb",
+  measurementId:     "G-EGX46S1PGK"
 };
 
 
 // ─────────────────────────────────────────────────────────────
 // 3. INITIALISATION
 // ─────────────────────────────────────────────────────────────
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+const app       = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);   // Google Analytics ✓
+const db        = getFirestore(app);
 
 
 // ─────────────────────────────────────────────────────────────
@@ -353,6 +357,6 @@ export const COLOR_PALETTE = [
 ];
 
 // ─────────────────────────────────────────────────────────────
-// 10. EXPORT DATABASE INSTANCE
+// 10. EXPORT INSTANCES
 // ─────────────────────────────────────────────────────────────
-export { db };
+export { db, analytics };
