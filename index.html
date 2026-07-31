@@ -368,50 +368,6 @@
       color: #fff;
     }
 
-    /* ─── WEEK VIEW ─── */
-    .week-grid {
-      display: grid;
-      grid-template-columns: 80px repeat(7, 1fr);
-      border: 1px solid var(--border-col);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .week-day-header {
-      background: var(--bg-card2);
-      border-bottom: 1px solid var(--border-col);
-      border-right: 1px solid var(--border-col);
-      padding: 8px;
-      text-align: center;
-      font-size: 0.78rem;
-      font-weight: 700;
-    }
-
-    .week-day-header.today-col { background: rgba(230,57,70,0.15); color: var(--garage-red); }
-
-    .week-emp-label {
-      border-right: 1px solid var(--border-col);
-      border-bottom: 1px solid var(--border-col);
-      padding: 8px 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--bg-card2);
-    }
-
-    .week-cell {
-      border-right: 1px solid var(--border-col);
-      border-bottom: 1px solid var(--border-col);
-      padding: 4px;
-      min-height: 50px;
-      cursor: pointer;
-      transition: background 0.15s;
-      position: relative;
-    }
-
-    .week-cell:hover { background: rgba(230,57,70,0.04); }
-    .week-cell.today-col { background: rgba(230,57,70,0.04); }
-
     /* ─── MODAL ─── */
     .modal-overlay {
       position: fixed;
@@ -507,24 +463,6 @@
 
     .form-textarea { resize: vertical; min-height: 80px; font-family: inherit; }
 
-    .color-picker-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .color-swatch {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 3px solid transparent;
-      transition: all 0.15s;
-      flex-shrink: 0;
-    }
-    .color-swatch.selected { border-color: #fff; transform: scale(1.2); }
-
     /* ─── LEGEND ─── */
     .legend-item {
       display: flex;
@@ -581,45 +519,6 @@
     }
     .notepad-area:focus { border-color: var(--garage-orange); }
 
-    /* ─── TOAST ─── */
-    .toast-container {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .toast {
-      background: var(--bg-card);
-      border: 1px solid var(--border-col);
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-      min-width: 220px;
-    }
-
-    .toast.success { border-left: 3px solid var(--garage-green); }
-    .toast.error { border-left: 3px solid var(--garage-red); }
-    .toast.info { border-left: 3px solid var(--garage-blue); }
-
-    @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; pointer-events: none; }
-    }
-
     /* ─── TABS ─── */
     .view-tabs {
       display: flex;
@@ -651,6 +550,17 @@
     .page-section { display: none; }
     .page-section.active { display: block; }
 
+    /* ─── LOGIN OVERLAY ─── */
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-dark);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
       .sidebar { display: none; }
@@ -662,6 +572,31 @@
   </style>
 </head>
 <body>
+
+<!-- ════════════════════ LOGIN MODAL ════════════════════ -->
+<div id="loginOverlay">
+  <div class="card" style="width: 100%; max-width: 360px; border-color: var(--garage-red);">
+    <div style="text-align:center; margin-bottom:1.5rem;">
+      <div class="logo-icon" style="margin: 0 auto 10px auto;"><i class="fa fa-wrench"></i></div>
+      <h2 style="font-weight:800; font-size:1.2rem;">CONNEXION ATELIER</h2>
+      <p style="font-size:0.75rem; color:var(--text-muted);">Accès réservé au personnel</p>
+    </div>
+    <form onsubmit="handleLogin(event)" style="display:flex; flex-direction:column; gap:1rem;">
+      <div class="form-group">
+        <label class="form-label">Identifiant (ID)</label>
+        <input type="text" id="loginId" class="form-input" placeholder="ex: tyson" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" id="loginPass" class="form-input" placeholder="••••••••" required />
+      </div>
+      <div id="loginError" style="color:var(--garage-red); font-size:0.8rem; display:none; text-align:center;">
+        Identifiants incorrects
+      </div>
+      <button type="submit" class="btn btn-red" style="justify-content:center; width:100%;">Se connecter</button>
+    </form>
+  </div>
+</div>
 
 <!-- ════════════════════ HEADER ════════════════════ -->
 <header class="app-header">
@@ -679,6 +614,7 @@
       <span id="presenceCount">0</span> disponible(s) aujourd'hui
     </div>
     <div id="todayLabel" style="font-size:0.78rem;color:var(--text-muted);"></div>
+    <button class="btn btn-ghost btn-sm" onclick="handleLogout()"><i class="fa fa-right-from-bracket"></i> Déconnexion</button>
   </div>
 </header>
 
@@ -900,6 +836,14 @@
         <label class="form-label">Nom complet</label>
         <input type="text" class="form-input" id="empNameInput" placeholder="ex: Jean Dupont" />
       </div>
+      <div class="form-group">
+        <label class="form-label">Identifiant (ID Connexion)</label>
+        <input type="text" class="form-input" id="empIdInput" placeholder="ex: jdupont" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-input" id="empPassInput" placeholder="••••••••" />
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('empModal')">Annuler</button>
@@ -910,13 +854,37 @@
 
 <!-- ════════════════════ JAVASCRIPT ════════════════════ -->
 <script>
+  // Liste du personnel modifiable directement dans le code ou via le site
   let employees = [
-    { id: '1', name: 'Jean Dupont' },
-    { id: '2', name: 'Pierre Martin' }
+    { id: 'tyson', name: 'Tyson Mitch (Patron)', pass: 'admin123' },
+    { id: 'jdupont', name: 'Jean Dupont', pass: '1234' },
+    { id: 'pmartin', name: 'Pierre Martin', pass: '1234' }
   ];
+  
   let events = [];
   let currentView = 'month';
   let currentDate = new Date();
+
+  // Système de Login
+  function handleLogin(e) {
+    e.preventDefault();
+    const id = document.getElementById('loginId').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+
+    const user = employees.find(emp => emp.id === id && emp.pass === pass);
+    if (user) {
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('loginError').style.display = 'none';
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  }
+
+  function handleLogout() {
+    document.getElementById('loginId').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginOverlay').style.display = 'flex';
+  }
 
   // Navigation des pages
   function switchPage(pageId, element) {
@@ -941,15 +909,29 @@
 
   function openEmployeeModal() {
     document.getElementById('empNameInput').value = '';
+    document.getElementById('empIdInput').value = '';
+    document.getElementById('empPassInput').value = '';
     openModal('empModal');
   }
 
   function saveEmployee() {
     const name = document.getElementById('empNameInput').value.trim();
+    const id = document.getElementById('empIdInput').value.trim() || Date.now().toString();
+    const pass = document.getElementById('empPassInput').value.trim() || '1234';
+    
     if (!name) return;
-    employees.push({ id: Date.now().toString(), name: name });
+    employees.push({ id, name, pass });
     renderEmployees();
     closeModal('empModal');
+  }
+
+  function deleteEmployee(empId) {
+    if (confirm("Es-tu sûr de vouloir virer / supprimer ce membre du personnel ?")) {
+      employees = employees.filter(e => e.id !== empId);
+      events = events.filter(e => e.empId !== empId);
+      renderEmployees();
+      renderCalendar();
+    }
   }
 
   function saveEvent() {
@@ -993,16 +975,23 @@
     `).join('');
 
     grid.innerHTML = employees.map(e => `
-      <div class="card" style="display:flex;align-items:center;gap:12px;">
-        <div class="emp-avatar" style="background:var(--garage-blue);width:40px;height:40px;font-size:1rem;">${e.name.charAt(0)}</div>
-        <div>
-          <div style="font-weight:700;">${e.name}</div>
+      <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="emp-avatar" style="background:var(--garage-blue);width:40px;height:40px;font-size:1rem;">${e.name.charAt(0)}</div>
+          <div>
+            <div style="font-weight:700;">${e.name}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">ID: ${e.id}</div>
+          </div>
         </div>
+        <button class="btn btn-red btn-sm" onclick="deleteEmployee('${e.id}')" title="Virer / Supprimer">
+          <i class="fa fa-trash"></i>
+        </button>
       </div>
     `).join('');
 
     document.getElementById('stat-total').innerText = employees.length;
     document.getElementById('stat-presents').innerText = employees.length;
+    document.getElementById('presenceCount').innerText = employees.length;
   }
 
   function renderCalendar() {
@@ -1023,7 +1012,6 @@
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       
-      // Ajustement pour faire commencer la semaine le Lundi (0 -> Dimanche)
       let offset = (firstDay === 0 ? 6 : firstDay - 1);
       
       for (let i = 0; i < offset; i++) {
