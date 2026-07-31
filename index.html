@@ -6,6 +6,12 @@
   <title>Auto Body Shop — Planning & Absences</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <!-- ─── FIREBASE SDK (COMPAT MODULES) ─── -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <style>
     :root {
       --garage-red: #e63946;
@@ -186,11 +192,6 @@
 
     .emp-chip:hover { background: var(--bg-card2); }
 
-    .emp-chip.filtered {
-      border-color: var(--emp-color, var(--garage-blue));
-      background: rgba(255,255,255,0.04);
-    }
-
     .emp-avatar {
       width: 28px;
       height: 28px;
@@ -260,12 +261,6 @@
     }
     .btn-ghost:hover { background: var(--bg-card2); color: var(--text-main); }
 
-    .btn-green {
-      background: var(--garage-green);
-      color: #fff;
-    }
-    .btn-green:hover { background: #2d8c71; }
-
     .btn-sm {
       padding: 5px 10px;
       font-size: 0.78rem;
@@ -326,33 +321,13 @@
     }
 
     .cal-day:hover { border-color: var(--garage-red); background: rgba(230,57,70,0.05); }
-
-    .cal-day.today {
-      border-color: var(--garage-red);
-      background: rgba(230,57,70,0.08);
-    }
-
     .cal-day.other-month { opacity: 0.4; }
-
-    .cal-day.weekend-day { background: rgba(108,117,125,0.08); }
 
     .day-num {
       font-size: 0.75rem;
       font-weight: 600;
       color: var(--text-muted);
       margin-bottom: 2px;
-    }
-
-    .cal-day.today .day-num {
-      background: var(--garage-red);
-      color: #fff;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
     }
 
     .cal-event {
@@ -364,7 +339,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      cursor: pointer;
       color: #fff;
     }
 
@@ -442,7 +416,7 @@
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
-    .form-input, .form-select, .form-textarea {
+    .form-input, .form-select {
       background: var(--bg-card2);
       border: 1px solid var(--border-col);
       border-radius: 8px;
@@ -454,30 +428,12 @@
       width: 100%;
     }
 
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
+    .form-input:focus, .form-select:focus {
       border-color: var(--garage-red);
       box-shadow: 0 0 0 3px rgba(230,57,70,0.1);
     }
 
     .form-select option { background: var(--bg-card2); }
-
-    .form-textarea { resize: vertical; min-height: 80px; font-family: inherit; }
-
-    /* ─── LEGEND ─── */
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .legend-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
-      flex-shrink: 0;
-    }
 
     /* ─── STATS CARDS ─── */
     .stat-card {
@@ -517,7 +473,6 @@
       transition: border-color 0.2s;
       width: 100%;
     }
-    .notepad-area:focus { border-color: var(--garage-orange); }
 
     /* ─── TABS ─── */
     .view-tabs {
@@ -559,12 +514,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .cal-day { min-height: 55px; }
     }
 
     .glow-red { box-shadow: 0 0 20px rgba(230,57,70,0.2); }
@@ -624,7 +573,6 @@
   <!-- ──────── SIDEBAR ──────── -->
   <aside class="sidebar" id="sidebar">
 
-    <!-- Navigation -->
     <div>
       <p class="sidebar-section-title">Navigation</p>
       <div style="display:flex;flex-direction:column;gap:4px;">
@@ -645,7 +593,6 @@
 
     <div class="divider"></div>
 
-    <!-- Équipe -->
     <div style="flex:1;">
       <p class="sidebar-section-title">Équipe</p>
       <div id="sidebarEmployees" style="display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto;">
@@ -680,7 +627,6 @@
         </div>
       </div>
 
-      <!-- Stats row -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.2rem;" id="statsRow">
         <div class="stat-card">
           <div class="stat-num" style="color:var(--garage-green);" id="stat-presents">0</div>
@@ -700,7 +646,6 @@
         </div>
       </div>
 
-      <!-- Calendar card -->
       <div class="card glow-red">
         <div class="cal-header">
           <button class="cal-nav-btn" onclick="calNav(-1)"><i class="fa fa-chevron-left"></i></button>
@@ -708,15 +653,6 @@
           <button class="cal-nav-btn" onclick="calNav(1)"><i class="fa fa-chevron-right"></i></button>
         </div>
         <div id="calendarContainer"></div>
-      </div>
-
-      <!-- Legend -->
-      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:1rem;">
-        <div class="legend-item"><div class="legend-dot" style="background:#43aa8b;"></div> Congés / Vacances</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#6c757d;"></div> Week-end</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#e63946;"></div> Absence / Maladie</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#f9c74f;"></div> Garde / Astreinte</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#4361ee;"></div> Autre</div>
       </div>
     </section>
 
@@ -747,21 +683,6 @@
           <i class="fa fa-plus"></i> Assigner garde
         </button>
       </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;">
-        <div class="card" style="border-color:rgba(249,199,79,0.3);">
-          <div class="card-title" style="color:var(--garage-yellow);"><i class="fa fa-star"></i> En garde cette semaine</div>
-          <div id="gardeWeekList" style="display:flex;flex-direction:column;gap:8px;">
-            <div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde planifiée.</div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title"><i class="fa fa-clock-rotate-left"></i> Prochaines gardes</div>
-          <div id="gardeUpcomingList" style="display:flex;flex-direction:column;gap:8px;">
-            <div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde à venir.</div>
-          </div>
-        </div>
-      </div>
     </section>
 
     <!-- ════ PAGE: BLOC-NOTES ════ -->
@@ -771,11 +692,9 @@
         <p style="font-size:0.8rem;color:var(--text-muted);">Notes et consignes quotidiennes.</p>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr;gap:1rem;">
-        <div class="card">
-          <div class="card-title"><i class="fa fa-pen-to-square"></i> Note d'Atelier</div>
-          <textarea id="notepadMain" class="notepad-area" placeholder="Notes d'atelier..."></textarea>
-        </div>
+      <div class="card">
+        <div class="card-title"><i class="fa fa-pen-to-square"></i> Note d'Atelier</div>
+        <textarea id="notepadMain" class="notepad-area" placeholder="Notes d'atelier..." oninput="saveNotepad()"></textarea>
       </div>
     </section>
 
@@ -852,20 +771,77 @@
   </div>
 </div>
 
-<!-- ════════════════════ JAVASCRIPT ════════════════════ -->
+<!-- ════════════════════ JAVASCRIPT & FIREBASE ════════════════════ -->
 <script>
-  // Liste du personnel modifiable directement dans le code ou via le site
-  let employees = [
-    { id: 'tyson', name: 'Tyson Mitch (Patron)', pass: 'admin123' },
-    { id: 'jdupont', name: 'Jean Dupont', pass: '1234' },
-    { id: 'pmartin', name: 'Pierre Martin', pass: '1234' }
-  ];
-  
+  // Configuration de tes clés Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBR2VZtENM-AojtNalKBvpsZzdVRWOg7M8",
+    authDomain: "auto-body-shop-d2252.firebaseapp.com",
+    databaseURL: "https://auto-body-shop-d2252-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "auto-body-shop-d2252",
+    storageBucket: "auto-body-shop-d2252.firebasestorage.app",
+    messagingSenderId: "45691832034",
+    appId: "1:45691832034:web:09efc5e25d319c365f80bb",
+    measurementId: "G-EGX46S1PGK"
+  };
+
+  // Initialisation de Firebase Realtime Database
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Variables de l'application
+  let employees = [];
   let events = [];
   let currentView = 'month';
   let currentDate = new Date();
 
-  // Système de Login
+  // Valeurs de secours si la base de données est complètement vide au début
+  const defaultEmployees = [
+    { id: 'tyson', name: 'Tyson Mitch (Patron)', pass: 'admin123' },
+    { id: 'jdupont', name: 'Jean Dupont', pass: '1234' },
+    { id: 'pmartin', name: 'Pierre Martin', pass: '1234' }
+  ];
+
+  // ÉCOUTE EN TEMPS RÉEL DE FIREBASE
+  db.ref('employees').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      employees = Object.values(data);
+    } else {
+      employees = defaultEmployees;
+      db.ref('employees').set(defaultEmployees);
+    }
+    renderEmployees();
+  });
+
+  db.ref('events').on('value', (snapshot) => {
+    const data = snapshot.val();
+    events = data ? Object.values(data) : [];
+    renderCalendar();
+  });
+
+  db.ref('notepad').on('value', (snapshot) => {
+    const note = snapshot.val();
+    if (note !== null) {
+      document.getElementById('notepadMain').value = note;
+    }
+  });
+
+  // FONCTIONS DE SAUVEGARDE EN LIGNE
+  function syncEmployees() {
+    db.ref('employees').set(employees);
+  }
+
+  function syncEvents() {
+    db.ref('events').set(events);
+  }
+
+  function saveNotepad() {
+    const text = document.getElementById('notepadMain').value;
+    db.ref('notepad').set(text);
+  }
+
+  // Système de Connexion
   function handleLogin(e) {
     e.preventDefault();
     const id = document.getElementById('loginId').value.trim();
@@ -886,7 +862,7 @@
     document.getElementById('loginOverlay').style.display = 'flex';
   }
 
-  // Navigation des pages
+  // Navigation des Onglets
   function switchPage(pageId, element) {
     document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
@@ -921,7 +897,7 @@
     
     if (!name) return;
     employees.push({ id, name, pass });
-    renderEmployees();
+    syncEmployees();
     closeModal('empModal');
   }
 
@@ -929,8 +905,8 @@
     if (confirm("Es-tu sûr de vouloir virer / supprimer ce membre du personnel ?")) {
       employees = employees.filter(e => e.id !== empId);
       events = events.filter(e => e.empId !== empId);
-      renderEmployees();
-      renderCalendar();
+      syncEmployees();
+      syncEvents();
     }
   }
 
@@ -943,7 +919,7 @@
     if (!empId || !start || !end) return;
 
     events.push({ id: Date.now().toString(), empId, type, start, end });
-    renderCalendar();
+    syncEvents();
     closeModal('eventModal');
   }
 
@@ -1040,11 +1016,9 @@
     }
   }
 
-  // Initialisation
+  // Initialisation au chargement de la page
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('todayLabel').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    renderEmployees();
-    renderCalendar();
   });
 </script>
 </body>
