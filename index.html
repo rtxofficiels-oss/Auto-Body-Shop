@@ -333,13 +333,19 @@
     .cal-event {
       font-size: 0.65rem;
       font-weight: 600;
-      padding: 2px 5px;
+      padding: 3px 6px;
       border-radius: 4px;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       color: #fff;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .cal-event:hover {
+      transform: scale(1.03);
+      filter: brightness(1.1);
     }
 
     /* ─── MODAL ─── */
@@ -771,9 +777,26 @@
   </div>
 </div>
 
+<!-- MODAL: Détails / Retirer Événement -->
+<div class="modal-overlay" id="viewEventModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa fa-user"></i> Détails de l'Absence / Garde</div>
+      <button class="modal-close" onclick="closeModal('viewEventModal')"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="viewEventContent">
+      <!-- Détails générés en JS -->
+    </div>
+    <div class="modal-footer" style="justify-content: space-between;">
+      <button class="btn btn-red" id="btnDeleteEvent"><i class="fa fa-trash"></i> Retirer l'absence</button>
+      <button class="btn btn-ghost" onclick="closeModal('viewEventModal')">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════════════════════ JAVASCRIPT & FIREBASE ════════════════════ -->
 <script>
-  // Configuration de tes clés Firebase
+  // Configuration Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBR2VZtENM-AojtNalKBvpsZzdVRWOg7M8",
     authDomain: "auto-body-shop-d2252.firebaseapp.com",
@@ -785,17 +808,14 @@
     measurementId: "G-EGX46S1PGK"
   };
 
-  // Initialisation de Firebase Realtime Database
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // Variables de l'application
   let employees = [];
   let events = [];
   let currentView = 'month';
   let currentDate = new Date();
 
-  // Valeurs de secours si la base de données est complètement vide au début
   const defaultEmployees = [
     { id: 'tyson', name: 'Tyson Mitch (Patron)', pass: 'admin123' },
     { id: 'jdupont', name: 'Jean Dupont', pass: '1234' },
@@ -827,21 +847,15 @@
     }
   });
 
-  // FONCTIONS DE SAUVEGARDE EN LIGNE
-  function syncEmployees() {
-    db.ref('employees').set(employees);
-  }
-
-  function syncEvents() {
-    db.ref('events').set(events);
-  }
-
+  // FONCTIONS DE SAUVEGARDE
+  function syncEmployees() { db.ref('employees').set(employees); }
+  function syncEvents() { db.ref('events').set(events); }
   function saveNotepad() {
     const text = document.getElementById('notepadMain').value;
     db.ref('notepad').set(text);
   }
 
-  // Système de Connexion
+  // Connexion
   function handleLogin(e) {
     e.preventDefault();
     const id = document.getElementById('loginId').value.trim();
@@ -862,7 +876,7 @@
     document.getElementById('loginOverlay').style.display = 'flex';
   }
 
-  // Navigation des Onglets
+  // Navigation
   function switchPage(pageId, element) {
     document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
@@ -881,6 +895,46 @@
     if(date) document.getElementById('eventStartDate').value = date;
     document.getElementById('eventTypeSelect').value = type;
     openModal('eventModal');
+  }
+
+  // VOIR & SUPPRIMER UNE ABSENCE EN CLIQUANT DESSUS
+  function showEventDetails(eventId, e) {
+    e.stopPropagation(); // Évite d'ouvrir le modal d'ajout du jour
+    const ev = events.find(x => x.id === eventId);
+    if (!ev) return;
+
+    const emp = employees.find(x => x.id === ev.empId);
+    const empName = emp ? emp.name : 'Membre inconnu';
+    const typeLabel = {
+      conges: 'Congés / Vacances',
+      weekend: 'Week-end',
+      absence: 'Absence / Maladie',
+      garde: 'Garde / Astreinte',
+      autre: 'Autre'
+    }[ev.type] || ev.type;
+
+    document.getElementById('viewEventContent').innerHTML = `
+      <div style="display:flex; align-items:center; gap:12px; background:var(--bg-card2); padding:12px; border-radius:8px;">
+        <div class="emp-avatar" style="background:var(--garage-blue); width:40px; height:40px; font-size:1rem;">${empName.charAt(0)}</div>
+        <div>
+          <h3 style="font-size:1rem; font-weight:700;">${empName}</h3>
+          <p style="font-size:0.75rem; color:var(--text-muted);">ID: ${ev.empId}</p>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+        <div><strong>Type :</strong> ${typeLabel}</div>
+        <div><strong>Période :</strong> du ${ev.start} au ${ev.end}</div>
+      </div>
+    `;
+
+    document.getElementById('btnDeleteEvent').onclick = () => removeEvent(eventId);
+    openModal('viewEventModal');
+  }
+
+  function removeEvent(eventId) {
+    events = events.filter(e => e.id !== eventId);
+    syncEvents();
+    closeModal('viewEventModal');
   }
 
   function openEmployeeModal() {
@@ -902,7 +956,7 @@
   }
 
   function deleteEmployee(empId) {
-    if (confirm("Es-tu sûr de vouloir virer / supprimer ce membre du personnel ?")) {
+    if (confirm("Es-tu sûr de vouloir supprimer ce membre du personnel ?")) {
       employees = employees.filter(e => e.id !== empId);
       events = events.filter(e => e.empId !== empId);
       syncEmployees();
@@ -1003,7 +1057,9 @@
             <div class="day-num">${day}</div>
             ${dayEvents.map(ev => {
               const emp = employees.find(e => e.id === ev.empId);
-              return `<div class="cal-event" style="background:var(--garage-red);">${emp ? emp.name : 'Événement'}</div>`;
+              const color = ev.type === 'garde' ? 'var(--garage-yellow)' : 'var(--garage-red)';
+              const textColor = ev.type === 'garde' ? '#000' : '#fff';
+              return `<div class="cal-event" style="background:${color}; color:${textColor};" onclick="showEventDetails('${ev.id}', event)">${emp ? emp.name : 'Membre'}</div>`;
             }).join('')}
           </div>
         `;
@@ -1016,7 +1072,6 @@
     }
   }
 
-  // Initialisation au chargement de la page
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('todayLabel').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   });
