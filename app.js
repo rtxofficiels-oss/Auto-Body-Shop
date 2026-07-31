@@ -90,7 +90,7 @@ export const COLLECTIONS = {
  *   employeeColor: string,   // Couleur de l'employé
  *   startDate:     string,   // Date ISO "YYYY-MM-DD"
  *   endDate:       string,   // Date ISO "YYYY-MM-DD"
- *   type:          string,   // "conges"|"weekend"|"absence"|"ems"|"autre"
+ *   type:          string,   // "conges"|"weekend"|"absence"|"autre"
  *   note:          string,   // Commentaire optionnel
  *   createdAt:     string,   // ISO timestamp de création
  * }
@@ -343,7 +343,6 @@ export const EVENT_TYPES = {
   conges:  { label: "Congés / Vacances",  color: "#43aa8b" },
   weekend: { label: "Week-end",            color: "#6c757d" },
   absence: { label: "Absence / Maladie",   color: "#e63946" },
-  ems:     { label: "Garde EMS",           color: "#f9c74f" },
   autre:   { label: "Autre",              color: "#4361ee" }
 };
 
