@@ -37,12 +37,11 @@
       min-height: 100vh;
     }
 
-    /* ─── SCROLLBAR ─── */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg-dark); }
     ::-webkit-scrollbar-thumb { background: var(--border-col); border-radius: 3px; }
 
-    /* ─── HEADER ─── */
+    /* HEADER */
     .app-header {
       background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #1a1f30 100%);
       border-bottom: 2px solid var(--garage-red);
@@ -57,66 +56,32 @@
       box-shadow: 0 4px 20px rgba(230,57,70,0.15);
     }
 
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .logo-area { display: flex; align-items: center; gap: 12px; }
 
     .logo-icon {
-      width: 42px;
-      height: 42px;
+      width: 42px; height: 42px;
       background: linear-gradient(135deg, var(--garage-red), #c1121f);
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: #fff;
       box-shadow: 0 0 15px rgba(230,57,70,0.4);
     }
 
-    .logo-text h1 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.5px;
-    }
+    .logo-text h1 { font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+    .logo-text p { font-size: 0.7rem; color: var(--garage-red); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
 
-    .logo-text p {
-      font-size: 0.7rem;
-      color: var(--garage-red);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    /* ─── PRÉSENCE COUNTER ─── */
-    .presence-bar {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
+    .presence-bar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 
     .presence-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      display: flex; align-items: center; gap: 8px;
       background: rgba(67,170,139,0.15);
       border: 1px solid rgba(67,170,139,0.4);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--garage-green);
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 0.85rem; font-weight: 600; color: var(--garage-green);
     }
 
     .presence-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--garage-green);
-      border-radius: 50%;
+      width: 8px; height: 8px; background: var(--garage-green); border-radius: 50%;
       animation: pulse-green 2s infinite;
     }
 
@@ -125,405 +90,183 @@
       50% { opacity: 0.5; transform: scale(1.3); }
     }
 
-    /* ─── SIDEBAR ─── */
-    .layout {
-      display: flex;
-      min-height: calc(100vh - 64px);
-    }
+    /* LAYOUT & SIDEBAR */
+    .layout { display: flex; min-height: calc(100vh - 64px); }
 
     .sidebar {
-      width: 260px;
-      min-width: 260px;
+      width: 260px; min-width: 260px;
       background: var(--bg-card);
       border-right: 1px solid var(--border-col);
       padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+      display: flex; flex-direction: column; gap: 1.5rem;
       overflow-y: auto;
     }
 
     .sidebar-section-title {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--text-muted);
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--text-muted); font-weight: 700; margin-bottom: 0.5rem;
     }
 
-    /* ─── NAV TABS ─── */
     .nav-tab {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      transition: all 0.2s;
-      border: 1px solid transparent;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px; cursor: pointer;
+      font-size: 0.88rem; font-weight: 500; color: var(--text-muted);
+      transition: all 0.2s; border: 1px solid transparent;
     }
 
-    .nav-tab:hover {
-      background: var(--bg-card2);
-      color: var(--text-main);
-    }
+    .nav-tab:hover { background: var(--bg-card2); color: var(--text-main); }
+    .nav-tab.active { background: rgba(230,57,70,0.12); border-color: rgba(230,57,70,0.3); color: var(--garage-red); }
 
-    .nav-tab.active {
-      background: rgba(230,57,70,0.12);
-      border-color: rgba(230,57,70,0.3);
-      color: var(--garage-red);
-    }
-
-    /* ─── EMPLOYEE CARDS IN SIDEBAR ─── */
-    .emp-chip {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-    }
-
-    .emp-chip:hover { background: var(--bg-card2); }
-
+    .emp-chip { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; }
     .emp-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: #fff;
-      flex-shrink: 0;
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: #fff; flex-shrink: 0;
     }
-
     .emp-info { flex: 1; min-width: 0; }
     .emp-name { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* ─── MAIN ─── */
-    .main-content {
-      flex: 1;
-      padding: 1.5rem;
-      overflow-y: auto;
-      min-width: 0;
-    }
+    /* MAIN */
+    .main-content { flex: 1; padding: 1.5rem; overflow-y: auto; min-width: 0; }
 
-    /* ─── CARDS ─── */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-col);
-      border-radius: 12px;
-      padding: 1.25rem;
+      border-radius: 12px; padding: 1.25rem;
     }
 
     .card-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 1rem;
+      font-size: 1rem; font-weight: 700; color: var(--text-main);
+      display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;
     }
 
-    /* ─── BTN ─── */
+    /* BUTTONS */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 8px; font-size: 0.85rem;
+      font-weight: 600; cursor: pointer; border: none; transition: all 0.2s;
     }
 
-    .btn-red {
-      background: var(--garage-red);
-      color: #fff;
-    }
+    .btn-red { background: var(--garage-red); color: #fff; }
     .btn-red:hover { background: #c1121f; box-shadow: 0 0 12px rgba(230,57,70,0.4); }
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border-col);
-    }
+    .btn-green { background: var(--garage-green); color: #fff; }
+    .btn-green:hover { background: #348970; box-shadow: 0 0 12px rgba(67,170,139,0.4); }
+
+    .btn-orange { background: var(--garage-orange); color: #000; }
+    .btn-orange:hover { background: #e08b47; box-shadow: 0 0 12px rgba(244,162,97,0.4); }
+
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border-col); }
     .btn-ghost:hover { background: var(--bg-card2); color: var(--text-main); }
 
-    .btn-sm {
-      padding: 5px 10px;
-      font-size: 0.78rem;
-    }
+    .btn-sm { padding: 5px 10px; font-size: 0.78rem; }
 
-    /* ─── CALENDAR ─── */
-    .cal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-    }
-
+    /* CALENDAR */
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
     .cal-nav-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      border: 1px solid var(--border-col);
-      background: var(--bg-card2);
-      color: var(--text-main);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      transition: all 0.2s;
+      width: 34px; height: 34px; border-radius: 8px;
+      border: 1px solid var(--border-col); background: var(--bg-card2);
+      color: var(--text-main); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.2s;
     }
     .cal-nav-btn:hover { border-color: var(--garage-red); color: var(--garage-red); }
-
     .cal-title { font-size: 1.1rem; font-weight: 700; }
 
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 3px;
-    }
-
-    .cal-day-header {
-      text-align: center;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      padding: 6px 0;
-      font-weight: 700;
-    }
-
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-day-header { text-align: center; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 6px 0; font-weight: 700; }
     .cal-day {
-      min-height: 80px;
-      background: var(--bg-card2);
-      border: 1px solid var(--border-col);
-      border-radius: 6px;
-      padding: 4px;
-      cursor: pointer;
-      transition: all 0.15s;
-      position: relative;
-      overflow: hidden;
+      min-height: 80px; background: var(--bg-card2); border: 1px solid var(--border-col);
+      border-radius: 6px; padding: 4px; cursor: pointer; transition: all 0.15s; position: relative; overflow: hidden;
     }
-
     .cal-day:hover { border-color: var(--garage-red); background: rgba(230,57,70,0.05); }
     .cal-day.other-month { opacity: 0.4; }
-
-    .day-num {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 2px;
-    }
+    .day-num { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
 
     .cal-event {
-      font-size: 0.65rem;
-      font-weight: 600;
-      padding: 3px 6px;
-      border-radius: 4px;
-      margin-bottom: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.1s;
+      font-size: 0.65rem; font-weight: 600; padding: 3px 6px; border-radius: 4px;
+      margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: #fff; cursor: pointer; transition: transform 0.1s;
     }
-    .cal-event:hover {
-      transform: scale(1.03);
-      filter: brightness(1.1);
-    }
+    .cal-event:hover { transform: scale(1.03); filter: brightness(1.1); }
 
-    /* ─── MODAL ─── */
+    /* MODAL */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(4px);
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px); z-index: 200; display: flex;
+      align-items: center; justify-content: center; padding: 1rem;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
     }
-
-    .modal-overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
 
     .modal-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-col);
-      border-radius: 14px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      transform: scale(0.95);
-      transition: transform 0.25s;
+      background: var(--bg-card); border: 1px solid var(--border-col);
+      border-radius: 14px; width: 100%; max-width: 480px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.25s;
     }
-
     .modal-overlay.open .modal-box { transform: scale(1); }
 
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--border-col);
-    }
-
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-col); }
     .modal-title { font-size: 1rem; font-weight: 700; }
 
     .modal-close {
-      width: 30px;
-      height: 30px;
-      border-radius: 6px;
-      border: 1px solid var(--border-col);
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      transition: all 0.2s;
+      width: 30px; height: 30px; border-radius: 6px;
+      border: 1px solid var(--border-col); background: transparent;
+      color: var(--text-muted); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; font-size: 0.85rem; transition: all 0.2s;
     }
     .modal-close:hover { background: var(--garage-red); color: #fff; border-color: var(--garage-red); }
 
     .modal-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    .modal-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border-col); display: flex; justify-content: flex-end; gap: 8px; }
 
-    .modal-footer {
-      padding: 1rem 1.25rem;
-      border-top: 1px solid var(--border-col);
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    /* ─── FORM ELEMENTS ─── */
+    /* FORMS */
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
     .form-input, .form-select {
-      background: var(--bg-card2);
-      border: 1px solid var(--border-col);
-      border-radius: 8px;
-      color: var(--text-main);
-      padding: 9px 12px;
-      font-size: 0.88rem;
-      outline: none;
-      transition: border-color 0.2s;
-      width: 100%;
+      background: var(--bg-card2); border: 1px solid var(--border-col);
+      border-radius: 8px; color: var(--text-main); padding: 9px 12px;
+      font-size: 0.88rem; outline: none; transition: border-color 0.2s; width: 100%;
     }
-
-    .form-input:focus, .form-select:focus {
-      border-color: var(--garage-red);
-      box-shadow: 0 0 0 3px rgba(230,57,70,0.1);
-    }
-
+    .form-input:focus, .form-select:focus { border-color: var(--garage-red); box-shadow: 0 0 0 3px rgba(230,57,70,0.1); }
     .form-select option { background: var(--bg-card2); }
 
-    /* ─── STATS CARDS ─── */
-    .stat-card {
-      background: var(--bg-card2);
-      border: 1px solid var(--border-col);
-      border-radius: 10px;
-      padding: 1rem;
-      text-align: center;
-    }
+    /* STATS & TABS */
+    .stat-card { background: var(--bg-card2); border: 1px solid var(--border-col); border-radius: 10px; padding: 1rem; text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 800; line-height: 1; }
+    .stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: 4px; }
 
-    .stat-num {
-      font-size: 2rem;
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    /* ─── NOTEPAD ─── */
     .notepad-area {
-      background: var(--bg-card2);
-      border: 1px solid var(--border-col);
-      border-radius: 8px;
-      padding: 12px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.85rem;
-      color: var(--text-main);
-      min-height: 120px;
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.2s;
-      width: 100%;
+      background: var(--bg-card2); border: 1px solid var(--border-col);
+      border-radius: 8px; padding: 12px; font-family: 'Courier New', monospace;
+      font-size: 0.85rem; color: var(--text-main); min-height: 120px;
+      resize: vertical; outline: none; transition: border-color 0.2s; width: 100%;
     }
 
-    /* ─── TABS ─── */
-    .view-tabs {
-      display: flex;
-      gap: 6px;
-      background: var(--bg-card2);
-      border-radius: 10px;
-      padding: 4px;
-      border: 1px solid var(--border-col);
-    }
+    .view-tabs { display: flex; gap: 6px; background: var(--bg-card2); border-radius: 10px; padding: 4px; border: 1px solid var(--border-col); }
+    .view-tab { padding: 6px 16px; border-radius: 7px; font-size: 0.82rem; font-weight: 600; cursor: pointer; color: var(--text-muted); border: none; background: transparent; transition: all 0.2s; }
+    .view-tab.active { background: var(--garage-red); color: #fff; }
 
-    .view-tab {
-      padding: 6px 16px;
-      border-radius: 7px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      color: var(--text-muted);
-      border: none;
-      background: transparent;
-      transition: all 0.2s;
-    }
-
-    .view-tab.active {
-      background: var(--garage-red);
-      color: #fff;
-    }
-
-    /* ─── PAGE SECTIONS ─── */
     .page-section { display: none; }
     .page-section.active { display: block; }
 
-    /* ─── LOGIN OVERLAY ─── */
-    #loginOverlay {
-      position: fixed;
-      inset: 0;
-      background: var(--bg-dark);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
+    #loginOverlay { position: fixed; inset: 0; background: var(--bg-dark); z-index: 1000; display: flex; align-items: center; justify-content: center; }
     .glow-red { box-shadow: 0 0 20px rgba(230,57,70,0.2); }
     .divider { height: 1px; background: var(--border-col); margin: 0.25rem 0; }
+
+    /* SERVICE WIDGET */
+    .service-widget {
+      background: var(--bg-card2);
+      border: 1px solid var(--border-col);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
 <body>
@@ -576,9 +319,8 @@
 <!-- ════════════════════ LAYOUT ════════════════════ -->
 <div class="layout">
 
-  <!-- ──────── SIDEBAR ──────── -->
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-
     <div>
       <p class="sidebar-section-title">Navigation</p>
       <div style="display:flex;flex-direction:column;gap:4px;">
@@ -604,15 +346,36 @@
       <div id="sidebarEmployees" style="display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto;">
       </div>
     </div>
-
   </aside>
 
-  <!-- ──────── MAIN CONTENT ──────── -->
+  <!-- MAIN CONTENT -->
   <main class="main-content">
+
+    <!-- HORODATEUR DE SERVICE (ACCESSIBLE À TOUS) -->
+    <div class="service-widget glow-red">
+      <div>
+        <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); font-weight:700;">Prise de Service</div>
+        <div style="display:flex; align-items:center; gap:10px; margin-top:4px;">
+          <span id="currentUserLabel" style="font-weight:700; font-size:1.1rem;">Non connecté</span>
+          <span id="serviceStatusBadge" style="font-size:0.75rem; padding:3px 8px; border-radius:12px; background:var(--border-col); color:var(--text-muted);">Hors Service</span>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:15px;">
+        <div style="text-align:right;">
+          <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase;">Temps de session</div>
+          <div id="serviceTimer" style="font-family:monospace; font-size:1.3rem; font-weight:800; color:var(--garage-yellow);">00:00:00</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-green btn-sm" id="btnStartService" onclick="startService()"><i class="fa fa-play"></i> Prise de service</button>
+          <button class="btn btn-orange btn-sm" id="btnPauseService" onclick="pauseService()" disabled><i class="fa fa-pause"></i> Pause</button>
+          <button class="btn btn-red btn-sm" id="btnStopService" onclick="stopService()" disabled><i class="fa fa-stop"></i> Fin de service</button>
+        </div>
+      </div>
+    </div>
 
     <!-- ════ PAGE: PLANNING ════ -->
     <section class="page-section active" id="page-planning">
-
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
         <div>
           <h2 style="font-size:1.2rem;font-weight:800;">Planning Mensuel / Hebdomadaire</h2>
@@ -620,16 +383,10 @@
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <div class="view-tabs">
-            <button class="view-tab active" id="tabMonth" onclick="switchCalView('month')">
-              <i class="fa fa-calendar"></i> Mois
-            </button>
-            <button class="view-tab" id="tabWeek" onclick="switchCalView('week')">
-              <i class="fa fa-calendar-week"></i> Semaine
-            </button>
+            <button class="view-tab active" id="tabMonth" onclick="switchCalView('month')"><i class="fa fa-calendar"></i> Mois</button>
+            <button class="view-tab" id="tabWeek" onclick="switchCalView('week')"><i class="fa fa-calendar-week"></i> Semaine</button>
           </div>
-          <button class="btn btn-red" onclick="openEventModal()">
-            <i class="fa fa-plus"></i> Ajouter
-          </button>
+          <button class="btn btn-red" onclick="openEventModal()"><i class="fa fa-plus"></i> Ajouter</button>
         </div>
       </div>
 
@@ -669,13 +426,18 @@
           <h2 style="font-size:1.2rem;font-weight:800;">Gestion du Personnel</h2>
           <p style="font-size:0.8rem;color:var(--text-muted);">Créez, modifiez ou supprimez les membres de votre équipe.</p>
         </div>
-        <button class="btn btn-red" onclick="openEmployeeModal()">
-          <i class="fa fa-user-plus"></i> Ajouter
-        </button>
+        <button class="btn btn-red" onclick="openEmployeeModal()"><i class="fa fa-user-plus"></i> Ajouter</button>
       </div>
 
-      <div id="employeeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+      <!-- SECTION HEURES POUR TYSON MITCH -->
+      <div id="tysonAdminPanel" style="display:none; margin-bottom:1.5rem;" class="card glow-red">
+        <div class="card-title" style="color:var(--garage-yellow);"><i class="fa fa-user-shield"></i> Rapport des Heures de Service (Tyson Mitch)</div>
+        <div id="hoursReportGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:10px;">
+          <!-- Généré dynamiquement -->
+        </div>
       </div>
+
+      <div id="employeeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;"></div>
     </section>
 
     <!-- ════ PAGE: GARDE / ASTREINTE ════ -->
@@ -685,9 +447,7 @@
           <h2 style="font-size:1.2rem;font-weight:800;">Planning Garde & Astreintes</h2>
           <p style="font-size:0.8rem;color:var(--text-muted);">Dépannages prioritaires assignés à l'équipe.</p>
         </div>
-        <button class="btn btn-red" onclick="openEventModal(null, 'garde')">
-          <i class="fa fa-plus"></i> Assigner garde
-        </button>
+        <button class="btn btn-red" onclick="openEventModal(null, 'garde')"><i class="fa fa-plus"></i> Assigner garde</button>
       </div>
     </section>
 
@@ -697,7 +457,6 @@
         <h2 style="font-size:1.2rem;font-weight:800;">Bloc-notes d'Atelier</h2>
         <p style="font-size:0.8rem;color:var(--text-muted);">Notes et consignes quotidiennes.</p>
       </div>
-
       <div class="card">
         <div class="card-title"><i class="fa fa-pen-to-square"></i> Note d'Atelier</div>
         <textarea id="notepadMain" class="notepad-area" placeholder="Notes d'atelier..." oninput="saveNotepad()"></textarea>
@@ -707,9 +466,7 @@
   </main>
 </div>
 
-<!-- ════════════════════ MODALS ════════════════════ -->
-
-<!-- MODAL: Événement -->
+<!-- MODALS -->
 <div class="modal-overlay" id="eventModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -749,7 +506,6 @@
   </div>
 </div>
 
-<!-- MODAL: Employé -->
 <div class="modal-overlay" id="empModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -777,16 +533,13 @@
   </div>
 </div>
 
-<!-- MODAL: Détails / Retirer Événement -->
 <div class="modal-overlay" id="viewEventModal">
   <div class="modal-box">
     <div class="modal-header">
       <div class="modal-title"><i class="fa fa-user"></i> Détails de l'Absence / Garde</div>
       <button class="modal-close" onclick="closeModal('viewEventModal')"><i class="fa fa-xmark"></i></button>
     </div>
-    <div class="modal-body" id="viewEventContent">
-      <!-- Détails générés en JS -->
-    </div>
+    <div class="modal-body" id="viewEventContent"></div>
     <div class="modal-footer" style="justify-content: space-between;">
       <button class="btn btn-red" id="btnDeleteEvent"><i class="fa fa-trash"></i> Retirer l'absence</button>
       <button class="btn btn-ghost" onclick="closeModal('viewEventModal')">Fermer</button>
@@ -796,7 +549,6 @@
 
 <!-- ════════════════════ JAVASCRIPT & FIREBASE ════════════════════ -->
 <script>
-  // Configuration Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBR2VZtENM-AojtNalKBvpsZzdVRWOg7M8",
     authDomain: "auto-body-shop-d2252.firebaseapp.com",
@@ -813,6 +565,10 @@
 
   let employees = [];
   let events = [];
+  let workSessions = {};
+  let currentUser = null;
+  let timerInterval = null;
+
   let currentView = 'month';
   let currentDate = new Date();
 
@@ -822,7 +578,7 @@
     { id: 'pmartin', name: 'Pierre Martin', pass: '1234' }
   ];
 
-  // ÉCOUTE EN TEMPS RÉEL DE FIREBASE
+  // REALTIME FIREBASE
   db.ref('employees').on('value', (snapshot) => {
     const data = snapshot.val();
     if (data) {
@@ -832,30 +588,29 @@
       db.ref('employees').set(defaultEmployees);
     }
     renderEmployees();
+    renderTysonReport();
   });
 
   db.ref('events').on('value', (snapshot) => {
-    const data = snapshot.val();
-    events = data ? Object.values(data) : [];
+    events = snapshot.val() ? Object.values(snapshot.val()) : [];
     renderCalendar();
   });
 
-  db.ref('notepad').on('value', (snapshot) => {
-    const note = snapshot.val();
-    if (note !== null) {
-      document.getElementById('notepadMain').value = note;
-    }
+  db.ref('workSessions').on('value', (snapshot) => {
+    workSessions = snapshot.val() || {};
+    updateServiceUI();
+    renderTysonReport();
   });
 
-  // FONCTIONS DE SAUVEGARDE
+  db.ref('notepad').on('value', (snapshot) => {
+    if (snapshot.val() !== null) document.getElementById('notepadMain').value = snapshot.val();
+  });
+
   function syncEmployees() { db.ref('employees').set(employees); }
   function syncEvents() { db.ref('events').set(events); }
-  function saveNotepad() {
-    const text = document.getElementById('notepadMain').value;
-    db.ref('notepad').set(text);
-  }
+  function saveNotepad() { db.ref('notepad').set(document.getElementById('notepadMain').value); }
 
-  // Connexion
+  // CONNEXION
   function handleLogin(e) {
     e.preventDefault();
     const id = document.getElementById('loginId').value.trim();
@@ -863,29 +618,159 @@
 
     const user = employees.find(emp => emp.id === id && emp.pass === pass);
     if (user) {
+      currentUser = user;
       document.getElementById('loginOverlay').style.display = 'none';
       document.getElementById('loginError').style.display = 'none';
+      document.getElementById('currentUserLabel').innerText = currentUser.name;
+      
+      if (currentUser.id === 'tyson') {
+        document.getElementById('tysonAdminPanel').style.display = 'block';
+      } else {
+        document.getElementById('tysonAdminPanel').style.display = 'none';
+      }
+
+      updateServiceUI();
     } else {
       document.getElementById('loginError').style.display = 'block';
     }
   }
 
   function handleLogout() {
+    currentUser = null;
+    clearInterval(timerInterval);
     document.getElementById('loginId').value = '';
     document.getElementById('loginPass').value = '';
     document.getElementById('loginOverlay').style.display = 'flex';
   }
 
-  // Navigation
+  // PRISE DE SERVICE / HORODATEUR
+  function getMySession() {
+    if (!currentUser) return null;
+    return workSessions[currentUser.id] || { status: 'off', totalSeconds: 0, lastStart: null };
+  }
+
+  function startService() {
+    if (!currentUser) return;
+    let session = getMySession();
+    session.status = 'working';
+    session.lastStart = Date.now();
+    db.ref(`workSessions/${currentUser.id}`).set(session);
+  }
+
+  function pauseService() {
+    if (!currentUser) return;
+    let session = getMySession();
+    if (session.status === 'working') {
+      const elapsed = Math.floor((Date.now() - session.lastStart) / 1000);
+      session.totalSeconds = (session.totalSeconds || 0) + elapsed;
+      session.status = 'paused';
+      session.lastStart = null;
+      db.ref(`workSessions/${currentUser.id}`).set(session);
+    }
+  }
+
+  function stopService() {
+    if (!currentUser) return;
+    let session = getMySession();
+    if (session.status === 'working') {
+      const elapsed = Math.floor((Date.now() - session.lastStart) / 1000);
+      session.totalSeconds = (session.totalSeconds || 0) + elapsed;
+    }
+    session.status = 'off';
+    session.lastStart = null;
+    db.ref(`workSessions/${currentUser.id}`).set(session);
+  }
+
+  function updateServiceUI() {
+    if (!currentUser) return;
+    const session = getMySession();
+    const statusBadge = document.getElementById('serviceStatusBadge');
+    const btnStart = document.getElementById('btnStartService');
+    const btnPause = document.getElementById('btnPauseService');
+    const btnStop = document.getElementById('btnStopService');
+
+    clearInterval(timerInterval);
+
+    if (session.status === 'working') {
+      statusBadge.innerText = 'En Service';
+      statusBadge.style.background = 'rgba(67,170,139,0.2)';
+      statusBadge.style.color = 'var(--garage-green)';
+      
+      btnStart.disabled = true;
+      btnPause.disabled = false;
+      btnStop.disabled = false;
+
+      timerInterval = setInterval(() => {
+        const currentElapsed = Math.floor((Date.now() - session.lastStart) / 1000);
+        const total = (session.totalSeconds || 0) + currentElapsed;
+        document.getElementById('serviceTimer').innerText = formatSeconds(total);
+      }, 1000);
+
+    } else if (session.status === 'paused') {
+      statusBadge.innerText = 'En Pause';
+      statusBadge.style.background = 'rgba(244,162,97,0.2)';
+      statusBadge.style.color = 'var(--garage-orange)';
+
+      btnStart.disabled = false;
+      btnPause.disabled = true;
+      btnStop.disabled = false;
+
+      document.getElementById('serviceTimer').innerText = formatSeconds(session.totalSeconds || 0);
+
+    } else {
+      statusBadge.innerText = 'Hors Service';
+      statusBadge.style.background = 'var(--border-col)';
+      statusBadge.style.color = 'var(--text-muted)';
+
+      btnStart.disabled = false;
+      btnPause.disabled = true;
+      btnStop.disabled = true;
+
+      document.getElementById('serviceTimer').innerText = formatSeconds(session.totalSeconds || 0);
+    }
+  }
+
+  function formatSeconds(secs) {
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = secs % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
+  // RAPPORT POUR TYSON MITCH
+  function renderTysonReport() {
+    if (!currentUser || currentUser.id !== 'tyson') return;
+
+    const grid = document.getElementById('hoursReportGrid');
+    grid.innerHTML = employees.map(emp => {
+      const sess = workSessions[emp.id] || { status: 'off', totalSeconds: 0, lastStart: null };
+      let secs = sess.totalSeconds || 0;
+      if (sess.status === 'working' && sess.lastStart) {
+        secs += Math.floor((Date.now() - sess.lastStart) / 1000);
+      }
+
+      const hours = (secs / 3600).toFixed(1);
+      const statusColor = sess.status === 'working' ? 'var(--garage-green)' : (sess.status === 'paused' ? 'var(--garage-orange)' : 'var(--text-muted)');
+      const statusText = sess.status === 'working' ? 'En Service' : (sess.status === 'paused' ? 'En Pause' : 'Inactif');
+
+      return `
+        <div style="background:var(--bg-card); border:1px solid var(--border-col); padding:10px; border-radius:8px;">
+          <div style="font-weight:700; font-size:0.85rem;">${emp.name}</div>
+          <div style="font-size:1.2rem; font-weight:800; color:var(--garage-yellow); margin:4px 0;">${hours}h <span style="font-size:0.75rem; font-weight:normal; color:var(--text-muted);">(${formatSeconds(secs)})</span></div>
+          <div style="font-size:0.7rem; font-weight:600; color:${statusColor};"><i class="fa fa-circle" style="font-size:0.5rem;"></i> ${statusText}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // AUTRES PAGES & NAVIGATION
   function switchPage(pageId, element) {
     document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-    
     document.getElementById('page-' + pageId).classList.add('active');
     if (element) element.classList.add('active');
   }
 
-  // Modals
   function openModal(id) { document.getElementById(id).classList.add('open'); }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -897,21 +782,14 @@
     openModal('eventModal');
   }
 
-  // VOIR & SUPPRIMER UNE ABSENCE EN CLIQUANT DESSUS
   function showEventDetails(eventId, e) {
-    e.stopPropagation(); // Évite d'ouvrir le modal d'ajout du jour
+    e.stopPropagation();
     const ev = events.find(x => x.id === eventId);
     if (!ev) return;
 
     const emp = employees.find(x => x.id === ev.empId);
     const empName = emp ? emp.name : 'Membre inconnu';
-    const typeLabel = {
-      conges: 'Congés / Vacances',
-      weekend: 'Week-end',
-      absence: 'Absence / Maladie',
-      garde: 'Garde / Astreinte',
-      autre: 'Autre'
-    }[ev.type] || ev.type;
+    const typeLabel = { conges: 'Congés / Vacances', weekend: 'Week-end', absence: 'Absence / Maladie', garde: 'Garde / Astreinte', autre: 'Autre' }[ev.type] || ev.type;
 
     document.getElementById('viewEventContent').innerHTML = `
       <div style="display:flex; align-items:center; gap:12px; background:var(--bg-card2); padding:12px; border-radius:8px;">
@@ -948,7 +826,6 @@
     const name = document.getElementById('empNameInput').value.trim();
     const id = document.getElementById('empIdInput').value.trim() || Date.now().toString();
     const pass = document.getElementById('empPassInput').value.trim() || '1234';
-    
     if (!name) return;
     employees.push({ id, name, pass });
     syncEmployees();
@@ -969,7 +846,6 @@
     const type = document.getElementById('eventTypeSelect').value;
     const start = document.getElementById('eventStartDate').value;
     const end = document.getElementById('eventEndDate').value;
-
     if (!empId || !start || !end) return;
 
     events.push({ id: Date.now().toString(), empId, type, start, end });
@@ -1041,12 +917,9 @@
       
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
-      
       let offset = (firstDay === 0 ? 6 : firstDay - 1);
       
-      for (let i = 0; i < offset; i++) {
-        html += `<div class="cal-day other-month"></div>`;
-      }
+      for (let i = 0; i < offset; i++) html += `<div class="cal-day other-month"></div>`;
       
       for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
