@@ -206,7 +206,6 @@
 
     .emp-info { flex: 1; min-width: 0; }
     .emp-name { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .emp-role { font-size: 0.7rem; color: var(--text-muted); }
 
     /* ─── MAIN ─── */
     .main-content {
@@ -389,10 +388,6 @@
     }
 
     .week-day-header.today-col { background: rgba(230,57,70,0.15); color: var(--garage-red); }
-
-    .week-row {
-      display: contents;
-    }
 
     .week-emp-label {
       border-right: 1px solid var(--border-col);
@@ -586,28 +581,6 @@
     }
     .notepad-area:focus { border-color: var(--garage-orange); }
 
-    /* ─── GUARD CARDS ─── */
-    .garde-card {
-      background: rgba(249,199,79,0.08);
-      border: 1px solid rgba(249,199,79,0.3);
-      border-radius: 10px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .garde-badge {
-      background: var(--garage-yellow);
-      color: #1a1a1a;
-      font-size: 0.65rem;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 20px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
     /* ─── TOAST ─── */
     .toast-container {
       position: fixed;
@@ -674,29 +647,6 @@
       color: #fff;
     }
 
-    /* ─── FILTER CHIPS ─── */
-    .filter-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid var(--border-col);
-      background: var(--bg-card2);
-      color: var(--text-muted);
-      transition: all 0.2s;
-    }
-    .filter-chip.active {
-      border-color: rgba(255,255,255,0.3);
-      color: #fff;
-    }
-
-    /* ─── SCROLLABLE SECTION ─── */
-    .section-scroll { overflow-y: auto; max-height: 180px; }
-
     /* ─── PAGE SECTIONS ─── */
     .page-section { display: none; }
     .page-section.active { display: block; }
@@ -707,42 +657,8 @@
       .cal-day { min-height: 55px; }
     }
 
-    /* ─── GLOW EFFECT ─── */
     .glow-red { box-shadow: 0 0 20px rgba(230,57,70,0.2); }
     .divider { height: 1px; background: var(--border-col); margin: 0.25rem 0; }
-
-    /* ─── LOADING ─── */
-    .spinner {
-      width: 20px; height: 20px;
-      border: 2px solid var(--border-col);
-      border-top-color: var(--garage-red);
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* event details popup */
-    .event-popup {
-      position: fixed;
-      z-index: 300;
-      background: var(--bg-card);
-      border: 1px solid var(--border-col);
-      border-radius: 10px;
-      padding: 12px 14px;
-      min-width: 200px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      pointer-events: all;
-    }
-
-    .badge-status {
-      font-size: 0.68rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
   </style>
 </head>
 <body>
@@ -760,15 +676,10 @@
   <div class="presence-bar">
     <div class="presence-badge">
       <div class="presence-dot"></div>
-      <span id="presenceCount">—</span> disponible(s) aujourd'hui
+      <span id="presenceCount">0</span> disponible(s) aujourd'hui
     </div>
     <div id="todayLabel" style="font-size:0.78rem;color:var(--text-muted);"></div>
   </div>
-
-  <!-- Mobile nav toggle -->
-  <button id="mobileMenuBtn" class="btn btn-ghost btn-sm" style="display:none;">
-    <i class="fa fa-bars"></i>
-  </button>
 </header>
 
 <!-- ════════════════════ LAYOUT ════════════════════ -->
@@ -798,53 +709,11 @@
 
     <div class="divider"></div>
 
-    <!-- Filters by type -->
-    <div>
-      <p class="sidebar-section-title">Filtrer par statut</p>
-      <div style="display:flex;flex-direction:column;gap:4px;" id="statusFilters">
-        <div class="emp-chip" onclick="toggleStatusFilter('all', this)" data-status="all" style="--emp-color:#ffffff;">
-          <div class="emp-avatar" style="background:#444;font-size:0.6rem;"><i class="fa fa-globe"></i></div>
-          <div class="emp-info"><div class="emp-name">Tous les statuts</div></div>
-        </div>
-        <div class="emp-chip" onclick="toggleStatusFilter('conges', this)" data-status="conges">
-          <div class="legend-dot" style="background:#43aa8b;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
-          <div class="emp-info"><div class="emp-name">Congés / Vacances</div></div>
-        </div>
-        <div class="emp-chip" onclick="toggleStatusFilter('weekend', this)" data-status="weekend">
-          <div class="legend-dot" style="background:#6c757d;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
-          <div class="emp-info"><div class="emp-name">Week-end</div></div>
-        </div>
-        <div class="emp-chip" onclick="toggleStatusFilter('absence', this)" data-status="absence">
-          <div class="legend-dot" style="background:#e63946;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
-          <div class="emp-info"><div class="emp-name">Absence / Maladie</div></div>
-        </div>
-        <div class="emp-chip" onclick="toggleStatusFilter('garde', this)" data-status="garde">
-          <div class="legend-dot" style="background:#f9c74f;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
-          <div class="emp-info"><div class="emp-name">Garde / Astreinte</div></div>
-        </div>
-        <div class="emp-chip" onclick="toggleStatusFilter('autre', this)" data-status="autre">
-          <div class="legend-dot" style="background:#4361ee;width:20px;height:20px;border-radius:50%;flex-shrink:0;"></div>
-          <div class="emp-info"><div class="emp-name">Autre</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Employees list -->
+    <!-- Équipe -->
     <div style="flex:1;">
       <p class="sidebar-section-title">Équipe</p>
       <div id="sidebarEmployees" style="display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto;">
-        <div style="color:var(--text-muted);font-size:0.8rem;">Chargement…</div>
       </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Firebase status -->
-    <div style="font-size:0.72rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
-      <span id="fbStatusDot" style="width:7px;height:7px;border-radius:50%;background:var(--garage-yellow);display:inline-block;"></span>
-      <span id="fbStatusText">Firebase — en attente</span>
     </div>
 
   </aside>
@@ -855,7 +724,6 @@
     <!-- ════ PAGE: PLANNING ════ -->
     <section class="page-section active" id="page-planning">
 
-      <!-- Top bar -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
         <div>
           <h2 style="font-size:1.2rem;font-weight:800;">Planning Mensuel / Hebdomadaire</h2>
@@ -879,19 +747,19 @@
       <!-- Stats row -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.2rem;" id="statsRow">
         <div class="stat-card">
-          <div class="stat-num" style="color:var(--garage-green);" id="stat-presents">—</div>
+          <div class="stat-num" style="color:var(--garage-green);" id="stat-presents">0</div>
           <div class="stat-label">Présents</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num" style="color:var(--garage-red);" id="stat-absents">—</div>
+          <div class="stat-num" style="color:var(--garage-red);" id="stat-absents">0</div>
           <div class="stat-label">Absents</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num" style="color:var(--garage-yellow);" id="stat-garde">—</div>
+          <div class="stat-num" style="color:var(--garage-yellow);" id="stat-garde">0</div>
           <div class="stat-label">Garde / Astreinte</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num" style="color:var(--text-muted);" id="stat-total">—</div>
+          <div class="stat-num" style="color:var(--text-muted);" id="stat-total">0</div>
           <div class="stat-label">Total équipe</div>
         </div>
       </div>
@@ -929,9 +797,6 @@
       </div>
 
       <div id="employeeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
-        <div class="card" style="text-align:center;color:var(--text-muted);">
-          <span class="spinner"></span> Chargement…
-        </div>
       </div>
     </section>
 
@@ -940,7 +805,7 @@
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;">
         <div>
           <h2 style="font-size:1.2rem;font-weight:800;">Planning Garde & Astreintes</h2>
-          <p style="font-size:0.8rem;color:var(--text-muted);">Dépannages prioritaires assignés aux mécaniciens de garde.</p>
+          <p style="font-size:0.8rem;color:var(--text-muted);">Dépannages prioritaires assignés à l'équipe.</p>
         </div>
         <button class="btn btn-red" onclick="openEventModal(null, 'garde')">
           <i class="fa fa-plus"></i> Assigner garde
@@ -949,7 +814,7 @@
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;">
         <div class="card" style="border-color:rgba(249,199,79,0.3);">
-          <div class="card-title" style="color:var(--garage-yellow);"><i class="fa fa-star"></i> Mécaniciens en garde cette semaine</div>
+          <div class="card-title" style="color:var(--garage-yellow);"><i class="fa fa-star"></i> En garde cette semaine</div>
           <div id="gardeWeekList" style="display:flex;flex-direction:column;gap:8px;">
             <div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde planifiée.</div>
           </div>
@@ -961,49 +826,19 @@
           </div>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-title"><i class="fa fa-list"></i> Toutes les gardes</div>
-        <div id="gardeAllList" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;">
-          <div style="color:var(--text-muted);font-size:0.82rem;">Aucune garde enregistrée.</div>
-        </div>
-      </div>
     </section>
 
     <!-- ════ PAGE: BLOC-NOTES ════ -->
     <section class="page-section" id="page-notepad">
       <div style="margin-bottom:1.2rem;">
         <h2 style="font-size:1.2rem;font-weight:800;">Bloc-notes d'Atelier</h2>
-        <p style="font-size:0.8rem;color:var(--text-muted);">Consignes quotidiennes synchronisées en temps réel avec l'équipe.</p>
+        <p style="font-size:0.8rem;color:var(--text-muted);">Notes et consignes quotidiennes.</p>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 320px;gap:1rem;" id="notepadLayout">
+      <div style="display:grid;grid-template-columns:1fr;gap:1rem;">
         <div class="card">
-          <div class="card-title"><i class="fa fa-pen-to-square"></i> Note du jour
-            <span id="notepadSaveStatus" style="font-size:0.72rem;font-weight:400;color:var(--text-muted);margin-left:auto;"></span>
-          </div>
-          <textarea id="notepadMain" class="notepad-area" placeholder="Ex: Livraison pièces BMW à 14h, Contrôle technique samedi matin, Réunion chef d'atelier lundi…"></textarea>
-          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;">
-            <button class="btn btn-ghost btn-sm" onclick="clearNotepad()"><i class="fa fa-trash"></i> Effacer</button>
-            <button class="btn btn-red btn-sm" onclick="saveNotepad()"><i class="fa fa-floppy-disk"></i> Sauvegarder</button>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:1rem;">
-          <div class="card">
-            <div class="card-title" style="font-size:0.9rem;"><i class="fa fa-clock"></i> Notes précédentes</div>
-            <div id="notepadHistory" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;">
-              <div style="color:var(--text-muted);font-size:0.78rem;">Aucune note précédente.</div>
-            </div>
-          </div>
-
-          <div class="card" style="border-color:rgba(230,57,70,0.3);">
-            <div class="card-title" style="font-size:0.9rem;color:var(--garage-red);"><i class="fa fa-triangle-exclamation"></i> Consignes prioritaires</div>
-            <textarea id="notepadPriority" class="notepad-area" placeholder="Consignes urgentes chef d'équipe…" style="min-height:80px;border-color:rgba(230,57,70,0.3);"></textarea>
-            <button class="btn btn-red btn-sm" style="margin-top:8px;align-self:flex-end;" onclick="savePriorityNote()">
-              <i class="fa fa-floppy-disk"></i> Sauvegarder
-            </button>
-          </div>
+          <div class="card-title"><i class="fa fa-pen-to-square"></i> Note d'Atelier</div>
+          <textarea id="notepadMain" class="notepad-area" placeholder="Notes d'atelier..."></textarea>
         </div>
       </div>
     </section>
@@ -1013,7 +848,7 @@
 
 <!-- ════════════════════ MODALS ════════════════════ -->
 
-<!-- MODAL: Événement / Absence -->
+<!-- MODAL: Événement -->
 <div class="modal-overlay" id="eventModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -1023,9 +858,7 @@
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label">Membre du personnel</label>
-        <select class="form-select" id="eventEmpSelect">
-          <option value="">Sélectionner un employé...</option>
-        </select>
+        <select class="form-select" id="eventEmpSelect"></select>
       </div>
       <div class="form-group">
         <label class="form-label">Motif / Statut</label>
@@ -1047,10 +880,6 @@
           <input type="date" class="form-input" id="eventEndDate" />
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Description / Note (optionnel)</label>
-        <textarea class="form-textarea" id="eventNote" placeholder="Détails supplémentaires..."></textarea>
-      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('eventModal')">Annuler</button>
@@ -1059,5 +888,176 @@
   </div>
 </div>
 
+<!-- MODAL: Employé -->
+<div class="modal-overlay" id="empModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa fa-user-plus"></i> Ajouter un membre</div>
+      <button class="modal-close" onclick="closeModal('empModal')"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nom complet</label>
+        <input type="text" class="form-input" id="empNameInput" placeholder="ex: Jean Dupont" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('empModal')">Annuler</button>
+      <button class="btn btn-red" onclick="saveEmployee()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ JAVASCRIPT ════════════════════ -->
+<script>
+  let employees = [
+    { id: '1', name: 'Jean Dupont' },
+    { id: '2', name: 'Pierre Martin' }
+  ];
+  let events = [];
+  let currentView = 'month';
+  let currentDate = new Date();
+
+  // Navigation des pages
+  function switchPage(pageId, element) {
+    document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+    
+    document.getElementById('page-' + pageId).classList.add('active');
+    if (element) element.classList.add('active');
+  }
+
+  // Modals
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  function openEventModal(date = null, type = 'conges') {
+    const select = document.getElementById('eventEmpSelect');
+    select.innerHTML = employees.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+    if(date) document.getElementById('eventStartDate').value = date;
+    document.getElementById('eventTypeSelect').value = type;
+    openModal('eventModal');
+  }
+
+  function openEmployeeModal() {
+    document.getElementById('empNameInput').value = '';
+    openModal('empModal');
+  }
+
+  function saveEmployee() {
+    const name = document.getElementById('empNameInput').value.trim();
+    if (!name) return;
+    employees.push({ id: Date.now().toString(), name: name });
+    renderEmployees();
+    closeModal('empModal');
+  }
+
+  function saveEvent() {
+    const empId = document.getElementById('eventEmpSelect').value;
+    const type = document.getElementById('eventTypeSelect').value;
+    const start = document.getElementById('eventStartDate').value;
+    const end = document.getElementById('eventEndDate').value;
+
+    if (!empId || !start || !end) return;
+
+    events.push({ id: Date.now().toString(), empId, type, start, end });
+    renderCalendar();
+    closeModal('eventModal');
+  }
+
+  function switchCalView(view) {
+    currentView = view;
+    document.getElementById('tabMonth').classList.toggle('active', view === 'month');
+    document.getElementById('tabWeek').classList.toggle('active', view === 'week');
+    renderCalendar();
+  }
+
+  function calNav(delta) {
+    if (currentView === 'month') {
+      currentDate.setMonth(currentDate.getMonth() + delta);
+    } else {
+      currentDate.setDate(currentDate.getDate() + (delta * 7));
+    }
+    renderCalendar();
+  }
+
+  function renderEmployees() {
+    const list = document.getElementById('sidebarEmployees');
+    const grid = document.getElementById('employeeGrid');
+
+    list.innerHTML = employees.map(e => `
+      <div class="emp-chip">
+        <div class="emp-avatar" style="background:var(--garage-blue);">${e.name.charAt(0)}</div>
+        <div class="emp-info"><div class="emp-name">${e.name}</div></div>
+      </div>
+    `).join('');
+
+    grid.innerHTML = employees.map(e => `
+      <div class="card" style="display:flex;align-items:center;gap:12px;">
+        <div class="emp-avatar" style="background:var(--garage-blue);width:40px;height:40px;font-size:1rem;">${e.name.charAt(0)}</div>
+        <div>
+          <div style="font-weight:700;">${e.name}</div>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('stat-total').innerText = employees.length;
+    document.getElementById('stat-presents').innerText = employees.length;
+  }
+
+  function renderCalendar() {
+    const container = document.getElementById('calendarContainer');
+    const title = document.getElementById('calTitle');
+    
+    if (currentView === 'month') {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+      
+      title.innerText = `${monthNames[month]} ${year}`;
+      
+      let html = '<div class="cal-grid">';
+      const days = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+      days.forEach(d => html += `<div class="cal-day-header">${d}</div>`);
+      
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      // Ajustement pour faire commencer la semaine le Lundi (0 -> Dimanche)
+      let offset = (firstDay === 0 ? 6 : firstDay - 1);
+      
+      for (let i = 0; i < offset; i++) {
+        html += `<div class="cal-day other-month"></div>`;
+      }
+      
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayEvents = events.filter(e => dateStr >= e.start && dateStr <= e.end);
+
+        html += `
+          <div class="cal-day" onclick="openEventModal('${dateStr}')">
+            <div class="day-num">${day}</div>
+            ${dayEvents.map(ev => {
+              const emp = employees.find(e => e.id === ev.empId);
+              return `<div class="cal-event" style="background:var(--garage-red);">${emp ? emp.name : 'Événement'}</div>`;
+            }).join('')}
+          </div>
+        `;
+      }
+      html += '</div>';
+      container.innerHTML = html;
+    } else {
+      title.innerText = `Semaine du ${currentDate.toLocaleDateString()}`;
+      container.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);">Vue semaine</div>';
+    }
+  }
+
+  // Initialisation
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('todayLabel').innerText = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    renderEmployees();
+    renderCalendar();
+  });
+</script>
 </body>
 </html>
